@@ -1,25 +1,8 @@
-import { ControllerKey } from './Const.js';
+import Base from '../../utils/spritefxcontrol/Base.js';
 
 const GetValue = Phaser.Utils.Objects.GetValue;
 
-class InverseSpriteFxPipelineControl {
-    constructor(pipeline, gameObject, config) {
-        this.pipeline = pipeline;
-        this.gameObject = gameObject;
-        this.resetFromJSON(config);
-
-        gameObject[ControllerKey] = this;
-
-        gameObject.once('destroy', this.destroy, this);
-    }
-
-    destroy() {
-        this.gameObject[ControllerKey] = undefined;
-
-        this.pipeline = undefined;
-        this.gameObject = undefined;
-    }
-
+class InverseSpriteFxPipelineControl extends Base {
     resetFromJSON(o) {
         this.setIntensity(GetValue(o, 'intensity', 1));
         return this;

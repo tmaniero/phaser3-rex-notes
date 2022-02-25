@@ -25,7 +25,7 @@ class BaseSpriteFxPipelinePlugin extends Phaser.Plugins.BasePlugin {
         if (gameObject[this.controllerKey]) {
             gameObject[this.controllerKey].resetFromJSON(config);
         } else {
-            var controller = new this.controllerClass(this.pipeline, gameObject, config);
+            gameObject[this.controllerKey] = new this.controllerClass(this.pipeline, gameObject, config);
         }
         return this;
     }
