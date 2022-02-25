@@ -1,12 +1,11 @@
 import FragSrc from '../inverse-postfxfrag.js';
-import { ControllerKey } from './Const.js';
 
 const SpriteFXPipeline = Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline;
 
 class InverseSpriteFxPipeline extends SpriteFXPipeline {
     constructor(game) {
         super({
-            name: ControllerKey,
+            name: 'rexInverseSpriteFx',
             game: game,
             renderTarget: true,
             fragShader: FragSrc
