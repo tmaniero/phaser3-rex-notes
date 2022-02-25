@@ -1,5 +1,5 @@
 import phaser from '../../../phaser/src/phaser';
-import InverseSpriteFxPipelinePlugin from '../../plugins/inversespritefxpipeline-plugin.js';
+import HslAdjustSpriteFXPipelinePlugin from '../../plugins/hsladjustspritefxpipeline-plugin';
 
 class Demo extends Phaser.Scene {
     constructor() {
@@ -18,21 +18,20 @@ class Demo extends Phaser.Scene {
         var gameObject2 = this.add.image(0, 300, 'classroom').setOrigin(0).setScale(0.5);
         var gameObject3 = this.add.image(400, 300, 'classroom').setOrigin(0).setScale(0.5);
 
-        var spriteFxPlugin = this.plugins.get('rexInverseSpriteFxPipeline');
+        var spriteFxPlugin = this.plugins.get('rexHslAdjustSpriteFXPipeline');
         spriteFxPlugin
             .add(gameObject0, {
-                intensity: 1
+                hueRotate: 1
             })
             .add(gameObject1, {
-                intensity: 0.75
+                hueRotate: 0.75
             })
             .add(gameObject2, {
-                intensity: 0.5
+                hueRotate: 0.5
             })
             .add(gameObject3, {
-                intensity: 0.25
+                hueRotate: 0.25
             })
-
     }
 
     update() {
@@ -51,8 +50,8 @@ var config = {
     scene: Demo,
     plugins: {
         global: [{
-            key: 'rexInverseSpriteFxPipeline',
-            plugin: InverseSpriteFxPipelinePlugin,
+            key: 'rexHslAdjustSpriteFXPipeline',
+            plugin: HslAdjustSpriteFXPipelinePlugin,
             start: true
         }]
     }
