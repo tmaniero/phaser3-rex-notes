@@ -117,4 +117,9 @@ export default class CanvasGameObjectBase extends Phaser.GameObjects.GameObject 
 
     visible: boolean;
     setVisible(value: boolean): this;
+
+    fxPadding: number;
+    setFXPadding(padding?: number): this;
+    onFXCopy(pipeline: Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline): void;
+    onFX(pipeline: Phaser.Renderer.WebGL.Pipelines.SpriteFXPipeline): void;
 }
