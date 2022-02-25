@@ -15,10 +15,6 @@ class InverseSpriteFxPipeline extends SpriteFXPipeline {
         this.intensity = 1;
     }
 
-    onDrawSprite(gameObject) {
-        gameObject[ControllerKey].onDrawSprite(this);
-    }
-
     onDraw(target) {
         this.set1f('intensity', this.intensity);
         this.drawToGame(target);

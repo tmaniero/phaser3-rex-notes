@@ -7,6 +7,11 @@ class BaseSpriteFxPipelinePlugin extends Phaser.Plugins.BasePlugin {
         this.pipeline = this.game.renderer.pipelines.add(ControllerKey, new SpriteFxPipelineClass(this.game));
         this.controllerKey = ControllerKey;
         this.controllerClass = ControllerClass;
+
+        // Override pipeline's onDrawSprite method
+        this.pipeline.onDrawSprite = function (gameObject) {
+            gameObject[ControllerKey].onDrawSprite();
+        }
         return this;
     }
 
@@ -20,7 +25,7 @@ class BaseSpriteFxPipelinePlugin extends Phaser.Plugins.BasePlugin {
         if (gameObject[this.controllerKey]) {
             gameObject[this.controllerKey].resetFromJSON(config);
         } else {
-            var controller = new this.controllerClass(gameObject, config);
+            var controller = new this.controllerClass(this.pipeline, gameObject, config);
         }
         return this;
     }

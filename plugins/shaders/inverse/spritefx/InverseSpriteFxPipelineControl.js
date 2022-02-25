@@ -3,11 +3,21 @@ import { ControllerKey } from './Const.js';
 const GetValue = Phaser.Utils.Objects.GetValue;
 
 class InverseSpriteFxPipelineControl {
-    constructor(gameObject, config) {
+    constructor(pipeline, gameObject, config) {
+        this.pipeline = pipeline;
         this.gameObject = gameObject;
         this.resetFromJSON(config);
 
         gameObject[ControllerKey] = this;
+
+        gameObject.once('destroy', this.destroy, this);
+    }
+
+    destroy() {
+        this.gameObject[ControllerKey] = undefined;
+
+        this.pipeline = undefined;
+        this.gameObject = undefined;
     }
 
     resetFromJSON(o) {
@@ -15,8 +25,8 @@ class InverseSpriteFxPipelineControl {
         return this;
     }
 
-    onDrawSprite(pipeline) {
-        pipeline.intensity = this.intensity;
+    onDrawSprite() {
+        this.pipeline.intensity = this.intensity;
     }
 
     // intensity
