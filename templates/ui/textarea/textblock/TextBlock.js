@@ -159,7 +159,7 @@ class TextBlock extends BaseSizer {
 
     get visibleLinesCount() {
         if (this._visibleLinesCount === undefined) {
-            this._visibleLinesCount = Math.floor(TextHeightToLinesCount.call(this, this.textObjectHeight));
+            this._visibleLinesCount = Math.floor(TextHeightToLinesCount.call(this, this._textObjectRealHeight));
         }
         return this._visibleLinesCount;
     }
@@ -179,14 +179,14 @@ class TextBlock extends BaseSizer {
         return this._textHeight;
     }
 
+    get textObjectHeight() {
+        return this._textObjectRealHeight - (this.textLineHeight + this.textLineSpacing);  // Remove 1 text line
+    }
+
     get textVisibleHeight() {
         if (this._textVisibleHeight === undefined) {
-            var h;
-            var textHeight = this.textHeight;
-            var textObjectHeight = this.textObjectHeight - this.textLineHeight - this.textLineSpacing;  // // Remove 1 text line
-            if (textHeight > textObjectHeight) {
-                h = textHeight - textObjectHeight;
-            } else {
+            var h = this.textHeight - this.textObjectHeight;
+            if (h < 0) {
                 h = 0;
             }
             this._textVisibleHeight = h;
@@ -267,6 +267,11 @@ class TextBlock extends BaseSizer {
 
     setTextOYByPercentage(percentage) {
         this.t = percentage;
+        return this;
+    }
+
+    scrollLastLineToButtom() {
+        this.setTextOY(this.textObjectHeight - this.textHeight);
         return this;
     }
 }

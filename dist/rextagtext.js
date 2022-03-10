@@ -2993,6 +2993,7 @@
         style: _this.style,
         pensPool: PensPools[type]
       });
+      _this.parser = parser;
 
       _this.initRTL();
 
@@ -3522,9 +3523,9 @@
   };
   var STYLE_RESULT = new TextStyle();
 
-  var parser = /*#__PURE__*/function () {
-    function parser(tags) {
-      _classCallCheck(this, parser);
+  var Parser = /*#__PURE__*/function () {
+    function Parser(tags) {
+      _classCallCheck(this, Parser);
 
       if (tags === undefined) {
         tags = {};
@@ -3533,7 +3534,7 @@
       this.tags = tags;
     }
 
-    _createClass(parser, [{
+    _createClass(Parser, [{
       key: "addTag",
       value: function addTag(name, prop) {
         this.tags[name] = prop;
@@ -3553,14 +3554,7 @@
           var regexResult = RE_SPLITTEXT.exec(text);
 
           if (!regexResult) {
-            var totalLen = text.length;
-
-            if (charIdx < totalLen) {
-              // Push remainder string
-              result.push(text.substring(charIdx, totalLen));
-            }
-
-            return result; // [text,...]
+            break;
           }
 
           var match = regexResult[0];
@@ -3585,6 +3579,15 @@
 
           charIdx = RE_SPLITTEXT.lastIndex;
         }
+
+        var totalLen = text.length;
+
+        if (charIdx < totalLen) {
+          // Push remainder string
+          result.push(text.substring(charIdx, totalLen));
+        }
+
+        return result; // [text,...]         
       }
     }, {
       key: "tagTextToProp",
@@ -3770,7 +3773,7 @@
       }
     }]);
 
-    return parser;
+    return Parser;
   }();
 
   var StyleToProp = function StyleToProp(s) {
@@ -3882,15 +3885,11 @@
     var _super = _createSuper(TagText);
 
     function TagText(scene, x, y, text, style) {
-      var _this;
-
       _classCallCheck(this, TagText);
 
       var tags = GetValue(style, 'tags', undefined);
-      var parser$1 = new parser(tags);
-      _this = _super.call(this, scene, x, y, text, style, 'rexTagText', parser$1);
-      _this.parser = parser$1;
-      return _this;
+      var parser = new Parser(tags);
+      return _super.call(this, scene, x, y, text, style, 'rexTagText', parser);
     }
 
     _createClass(TagText, [{

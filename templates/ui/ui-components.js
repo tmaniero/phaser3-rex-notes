@@ -53,6 +53,7 @@ import Drag from './drag/Drag.js';
 import Pinch from './pinch/Pinch.js';
 import Rotate from './rotate/Rotate.js';
 import Flip from './flip/Flip.js';
+import Shake from './shake/Shake.js';
 import TouchEventStop from './toucheventstop/TouchEventStop.js';
 import Perspective from './perspective/Perspective.js';
 import Anchor from './anchor/Anchor.js';
@@ -69,6 +70,7 @@ import {
 import { Edit } from '../../plugins/textedit.js';
 import WrapExpandText from './utils/wrapexpandtext/WrapExpandText.js';
 import { WaitEvent, WaitComplete } from './utils/WaitEvent.js';
+import DelayPromise from '../../plugins/utils/promise/Delay.js'
 import { Modal, ModalPromise, ModalClose } from './modal/Modal.js';
 import GetViewport from '../../plugins/utils/system/GetViewport.js';
 import SetChildrenInteractive from './utils/setchildreninteractive/SetChildrenInteractive.js';
@@ -131,6 +133,7 @@ export {
     Pinch,
     Rotate,
     Flip,
+    Shake,
     TouchEventStop,
     Perspective,
     Anchor,
@@ -148,6 +151,7 @@ export {
     WrapExpandText,
     WaitEvent,
     WaitComplete,
+    DelayPromise,
     GetViewport,
     SetChildrenInteractive,
     RequestDrag,

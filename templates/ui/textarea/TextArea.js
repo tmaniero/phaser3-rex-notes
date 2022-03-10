@@ -60,6 +60,11 @@ class TextArea extends Scrollable {
     get contentHeight() {
         return this.childrenMap.child.textHeight;
     }
+
+    scrollLastLineToButtom() {
+        this.childrenMap.child.scrollLastLineToButtom();
+        return this;
+    }
 }
 
 var methods = {

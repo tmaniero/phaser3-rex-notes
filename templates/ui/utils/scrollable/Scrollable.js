@@ -86,8 +86,15 @@ class Scrollable extends Sizer {
         this.addChildrenMap('header', header);
         this.addChildrenMap('footer', footer);
 
-        // Necessary properties of child object
-        // child.t (RW), child.childOY (RW), child.topChildOY (R), child.bottomChildOY (R)
+        this.runLayoutFlag = false;
+
+        /* Necessary properties of child object
+        - child.t (RW), 
+        - child.childOY (RW)
+        - child.topChildOY (R)
+        - child.bottomChildOY (R)
+        - child.childVisibleHeight (R)
+        */
     }
 
     runLayout(parent, newWidth, newHeight) {
@@ -97,6 +104,13 @@ class Scrollable extends Sizer {
         }
         super.runLayout(parent, newWidth, newHeight);
         this.resizeController();
+
+        // Set `t` to 0 at first runLayout()
+        if (!this.runLayoutFlag) {
+            this.runLayoutFlag = true;
+            this.setT(0);
+        }
+
         return this;
     }
 
@@ -145,6 +159,10 @@ class Scrollable extends Sizer {
 
     get bottomChildOY() {
         return this.childrenMap.child.bottomChildOY - this.childMargin.bottom;
+    }
+
+    get childVisibleHeight() {
+        return this.childrenMap.child.childVisibleHeight;
     }
 
     get isOverflow() {

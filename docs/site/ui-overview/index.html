@@ -966,20 +966,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../texture/" class="md-nav__link">
-        Texture
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -1996,20 +1982,6 @@
           
         </ul>
       </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../canvas-texture/" class="md-nav__link">
-        Canvas texture
-      </a>
     </li>
   
 
@@ -3115,12 +3087,87 @@
       
       
         <label class="md-nav__link" for="__nav_4_14">
+          Textures
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Textures" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_14">
+          <span class="md-nav__icon md-icon"></span>
+          Textures
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../textures/" class="md-nav__link">
+        Textures
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../canvas-texture/" class="md-nav__link">
+        Canvas texture
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../canvasframemanager/" class="md-nav__link">
+        Canvas frame manager
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_15" type="checkbox" id="__nav_4_15" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_15">
           Display
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Display" data-md-level="2">
-        <label class="md-nav__title" for="__nav_4_14">
+        <label class="md-nav__title" for="__nav_4_15">
           <span class="md-nav__icon md-icon"></span>
           Display
         </label>
@@ -8499,6 +8546,9 @@
     <div class="highlight"><pre><span></span><code><span class="nx">scene</span><span class="p">.</span><span class="nx">rexUI</span><span class="p">.</span><span class="nx">easeMoveFrom</span><span class="p">(</span><span class="nx">gameObject</span><span class="p">,</span> <span class="nx">duration</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">);</span>
 <span class="c1">// scene.rexUI.easeMoveFrom(gameObject, duration, x, y, ease);</span>
 </code></pre></div></li>
+<li><a href="../shake-position/">Shake</a>
+    <div class="highlight"><pre><span></span><code><span class="nx">scene</span><span class="p">.</span><span class="nx">rexUI</span><span class="p">.</span><span class="nx">shake</span><span class="p">(</span><span class="nx">gameObject</span><span class="p">,</span> <span class="nx">config</span><span class="p">);</span>
+</code></pre></div></li>
 <li><a href="../containerlite-perspective/">Perspective</a>: Snapshot children of <a href="../containerlite/">containerlite</a>, to a <a href="../perspective-rendertexture/">perspective render texture</a>.
     <div class="highlight"><pre><span></span><code><span class="kd">var</span> <span class="nx">perspective</span> <span class="o">=</span> <span class="nx">scene</span><span class="p">.</span><span class="nx">rexUI</span><span class="p">.</span><span class="nx">add</span><span class="p">.</span><span class="nx">perspective</span><span class="p">(</span><span class="nx">gameObject</span><span class="p">,</span> <span class="nx">config</span><span class="p">);</span>
 </code></pre></div>
@@ -8560,6 +8610,12 @@
 <li><code>eventEmitter</code> : <a href="../eventemitter3/">Event emitter</a> which will fire <code>'complete'</code> event, for example, <a href="../tween/#events">tween task</a>.</li>
 </ul>
 </li>
+<li>Delay time promise
+    <div class="highlight"><pre><span></span><code><span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nx">scene</span><span class="p">.</span><span class="nx">rexUI</span><span class="p">.</span><span class="nx">delayPromise</span><span class="p">(</span><span class="nx">time</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="p">})</span>
+</code></pre></div></li>
 </ul>
 <h3 id="view-port">View port<a class="headerlink" href="#view-port" title="Permanent link">&para;</a></h3>
 <p>View port is a <a href="../geom-rectangle/">rectangle</a> of current visible area.</p>

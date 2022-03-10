@@ -1238,13 +1238,17 @@
   };
 
   var PopUp = function PopUp(gameObject, duration, orientation, ease, scale) {
-    var start;
+    // Ease scale from 0 to current scale
+    var start, end;
 
     switch (orientation) {
       case 0:
       case 'x':
         start = {
           x: 0
+        };
+        end = {
+          x: gameObject.scaleX
         };
         break;
 
@@ -1253,17 +1257,21 @@
         start = {
           y: 0
         };
+        end = {
+          y: gameObject.scaleY
+        };
         break;
 
       default:
         start = 0;
+        end = gameObject.scale;
         break;
     }
 
     var config = {
       mode: 0,
       start: start,
-      end: 1,
+      end: end,
       duration: duration,
       ease: ease === undefined ? 'Cubic' : ease
     };
@@ -1279,6 +1287,7 @@
   };
 
   var ScaleDownDestroy = function ScaleDownDestroy(gameObject, duration, orientation, ease, destroyMode, scale) {
+    // Ease from current scale to 0
     if (destroyMode instanceof Scale) {
       scale = destroyMode;
       destroyMode = undefined;
@@ -1501,6 +1510,9 @@
       // Don't destroy here
       FadeOutDestroy(gameObject, duration, false);
     }
+  };
+
+  var NOOP = function NOOP() {//  NOOP
   };
 
   /**
@@ -2014,11 +2026,7 @@
       key: "transitionIn",
       value: function transitionIn() {
         var duration = this.transitInTime;
-
-        if (this.transitInCallback) {
-          this.transitInCallback(this.parent, duration);
-        }
-
+        this.transitInCallback(this.parent, duration);
         var cover = this.cover;
 
         if (cover) {
@@ -2031,11 +2039,7 @@
       key: "transitionOut",
       value: function transitionOut() {
         var duration = this.transitOutTime;
-
-        if (this.transitOutCallback) {
-          this.transitOutCallback(this.parent, duration);
-        }
-
+        this.transitOutCallback(this.parent, duration);
         var cover = this.cover;
 
         if (cover) {
@@ -2117,6 +2121,10 @@
             break;
         }
 
+        if (!callback) {
+          callback = NOOP;
+        }
+
         this.transitInCallback = callback; // callback = function(gameObject, duration) {}
 
         return this;
@@ -2136,6 +2144,10 @@
           case TransitionMode.fadeOut:
             callback = DefaultTransitCallbacks.fadeOut;
             break;
+        }
+
+        if (callback == null) {
+          callback = NOOP;
         }
 
         this.transitOutCallback = callback; // callback = function(gameObject, duration) {}

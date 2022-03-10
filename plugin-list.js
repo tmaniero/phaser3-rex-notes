@@ -26,6 +26,8 @@ module.exports = {
     'transitionimageplugin': './plugins/transitionimage-plugin.js',
     'fullwindowrectangleplugin': './plugins/fullwindowrectangle-plugin.js',
     'coverplugin': './plugins/cover-plugin.js',
+    // texture
+    'canvasframemanagerplugin': './plugins/canvasframemanager-plugin.js',
     // effect layer (shader)
     'effectlayerplugin': './plugins/effectlayer-plugin.js',
     'outlineeffectlayerplugin': './plugins/outlineeffectlayer-plugin.js',
@@ -75,6 +77,7 @@ module.exports = {
     'anchorplugin': './plugins/anchor-plugin.js',
     'modalplugin': './plugins/modal-plugin.js',
     'particlesalongboundsplugin': './plugins/particlesalongbounds-plugin.js',
+    'loadingprogressplugin': './plugins/loadingprogress-plugin.js',
     // member of game object, arcade behavior
     'eightdirectionplugin': './plugins/eightdirection-plugin.js',
     'bulletplugin': './plugins/bullet-plugin.js',
@@ -187,7 +190,7 @@ module.exports = {
     'bejeweled': './templates/bejeweled/Bejeweled.js',
     'uiplugin': './templates/ui/ui-plugin.js',
     'dialogquest': './templates/dialog-quest/DialogQuest.js',
-    'spinnerplugin': './templates/spinner/spinner-plugin.js',
+    'spinnerplugin': './templates/spinner/spinner-plugin.js',    
 
     // Plain class
     // rex ui

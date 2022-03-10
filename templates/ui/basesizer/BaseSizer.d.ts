@@ -305,7 +305,7 @@ declare class BaseSizer extends ContainerLite {
         alpha?: number
     ): this;
 
-    fadeInPromoise(
+    fadeInPromise(
         duration: number,
         alpha?: number
     ): Promise<any>;
@@ -360,6 +360,18 @@ declare class BaseSizer extends ContainerLite {
         duration: number,
         orientation?: 0 | 1 | 'x' | 'y',
         ease?: string
+    ): Promise<any>;
+
+    shake(
+        duration?: number,
+        magnitude?: number,
+        magnitudeMode?: 0 | 1 | 'constant' | 'decay'
+    ): this;
+
+    shakePromise(
+        duration?: number,
+        magnitude?: number,
+        magnitudeMode?: 0 | 1 | 'constant' | 'decay'
     ): Promise<any>;
 
     setAnchor(config: {

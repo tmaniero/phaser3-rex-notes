@@ -333,6 +333,10 @@ See also - [dirty](ui-basesizer.md#dirty)
     textArea.scrollToBottom();
     ```
     - Equal to `textArea.t = 1;`
+- Scroll last line to bottom
+    ```javascript
+    textArea.scrollLastLineToButtom();
+    ```
 
 #### Enable/disable scrolling
 

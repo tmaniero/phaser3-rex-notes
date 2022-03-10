@@ -7,7 +7,7 @@ var GETPROP_RESULT = {
 
 var STYLE_RESULT = new TextStyle();
 
-class parser {
+class Parser {
     constructor(tags) {
         if (tags === undefined) {
             tags = {};
@@ -29,11 +29,7 @@ class parser {
         while (true) {
             var regexResult = RE_SPLITTEXT.exec(text);
             if (!regexResult) {
-                var totalLen = text.length;
-                if (charIdx < totalLen) {  // Push remainder string
-                    result.push(text.substring(charIdx, totalLen));
-                }
-                return result; // [text,...]
+                break;
             }
 
             var match = regexResult[0];
@@ -56,6 +52,13 @@ class parser {
 
             charIdx = RE_SPLITTEXT.lastIndex;
         }
+
+        var totalLen = text.length;
+        if (charIdx < totalLen) {  // Push remainder string
+            result.push(text.substring(charIdx, totalLen));
+        }
+
+        return result; // [text,...]         
     }
 
     tagTextToProp(text, prevProp) {
@@ -303,4 +306,4 @@ var RE_STYLE_HEADER = /<\s*style=/i;
 var RE_STYLE = /<\s*style=["|']([^"|']+)["|']\s*\>([\s\S]*?)<\s*\/style\s*\>/;
 var RE_SPACE = /^\s+|\s+$/;
 
-export default parser;
+export default Parser;

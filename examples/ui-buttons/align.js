@@ -25,7 +25,7 @@ class Demo extends Phaser.Scene {
             buttons: [
                 createButton(this, 'A'),
                 createButton(this, 'B'),
-                createButton(this, 'c'),
+                createButton(this, 'C'),
             ],
 
             align: align

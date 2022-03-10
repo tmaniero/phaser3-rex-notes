@@ -27,6 +27,7 @@ export default {
         if (IsPlainObject(duration)) {
             var config = duration;
             duration = config.duration;
+            alpha = config.alpha;
         }
 
         var isInit = (this._fade === undefined);
@@ -42,7 +43,7 @@ export default {
         return this;
     },
 
-    fadeInPromoise(duration, alpha) {
+    fadeInPromise(duration, alpha) {
         this.fadeIn(duration, alpha);
         return WaitComplete(this._fade);
     },

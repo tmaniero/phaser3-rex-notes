@@ -40,6 +40,7 @@ import RoundRectangleCanvasFactory from './roundrectanglecanvas/Factory';
 import RoundRectangleFactory from './roundrectangle/Factory';
 import ScrollablePanelFactory from './scrollablepanel/Factory';
 import SizerFactory from './sizer/Factory';
+import ShakeFactory from './shake/Factory';
 import SliderFactory from './slider/Factory';
 import SpaceFactory from './space/Factory';
 import SwipeFactory from './swipe/Factory';
@@ -60,6 +61,7 @@ import { GetParentSizer, GetTopmostSizer } from './utils/GetParentSizer';
 import { Show, Hide, IsShown, } from './utils/Hide';
 import SetChildrenInteractive from './utils/setchildreninteractive/SetChildrenInteractive';
 import { WaitEvent, WaitComplete } from './utils/WaitEvent';
+import Delay from '../../plugins/utils/promise/Delay';
 import WrapExpandText from './utils/wrapexpandtext/WrapExpandText';
 import RequestDrag from '../../plugins/utils/input/RequestDrag';
 
@@ -106,6 +108,7 @@ declare class Factories {
     roundRectangle: typeof RoundRectangleFactory;
     scrollablePanel: typeof ScrollablePanelFactory;
     sizer: typeof SizerFactory;
+    shake: typeof ShakeFactory;
     slider: typeof SliderFactory;
     space: typeof SpaceFactory;
     swipe: typeof SwipeFactory;
@@ -139,6 +142,7 @@ declare class UIPlugins extends Phaser.Plugins.ScenePlugin {
     setChildrenInteractive: typeof SetChildrenInteractive;
     waitEvent: typeof WaitEvent;
     waitComplete: typeof WaitComplete;
+    delayPromise: typeof Delay;
     wrapExpandText: typeof WrapExpandText;
     requestDrag: typeof RequestDrag;
 
@@ -194,6 +198,7 @@ import RoundRectangleCanvasClass from './roundrectanglecanvas/RoundRectangleCanv
 import RoundRectangleClass from './roundrectangle/RoundRectangle';
 import ScrollablePanelClass from './scrollablepanel/ScrollablePanel';
 import SizerClass from './sizer/Sizer';
+import ShakeClass from './shake/Shake';
 import SliderClass from './slider/Slider';
 import SpaceClass from './space/Space';
 import SwipeClass from './swipe/Swipe';
@@ -248,6 +253,7 @@ declare namespace UIPlugins {
     type RoundRectangle = RoundRectangleClass;
     type ScrollablePanel = ScrollablePanelClass;
     type Sizer = SizerClass;
+    type shake = ShakeClass;
     type Slider = SliderClass;
     type Swipe = SwipeClass;
     type Space = SpaceClass;

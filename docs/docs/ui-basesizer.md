@@ -167,15 +167,20 @@ sizer.pushIntoBounds(bounds);
 
 ### Scale
 
-- Pop-up
+- Scale up from `0` to *current scale* of game object.
     - Pop-up width and height
         ```javascript
-        sizer.popUp(duration);
+        sizer
+            //.setScale(scaleX, scaleY)
+            .popUp(duration);
+        
         // sizer.popUp(duration, undefined, ease);
         ```
         or
         ```javascript
-        sizer.popUpPromise(duration)
+        sizer
+            //.setScale(scaleX, scaleY)
+            .popUpPromise(duration)
             .then(function() {
                 // ....
             })
@@ -183,39 +188,53 @@ sizer.pushIntoBounds(bounds);
         - `ease` : [Ease function](tween.md/#ease-equations), default is `'Cubic'`.
     - Pop-up width only
         ```javascript
-        sizer.popUp(duration, 'x');
+        sizer
+            //.setScaleX(scaleX)
+            .popUp(duration, 'x');
+        
         // sizer.popUp(duration, 'x', ease);
         ```
         or
         ```javascript
-        sizer.popUpPromise(duration, 'x')
+        sizer
+            //.setScaleX(scaleX)
+            .popUpPromise(duration, 'x')
             .then(function() {
                 // ....
             })
         ```
     - Pop-up height only
         ```javascript
-        sizer.popUp(duration, 'y');
+        sizer
+            //.setScaleY(scaleY)
+            .popUp(duration, 'y');
+        
         // sizer.popUp(duration, 'y', ease);
         ```
         or
         ```javascript
-        sizer.popUpPromise(duration, 'y')
+        sizer
+            //.setScaleY(scaleY)
+            .popUpPromise(duration, 'y')
             .then(function() {
                 // ....
             })
         ```
     - Pop-up via config
         ```javascript
-        sizer.popUp({
-            duration: undefined,
-            orientation: undefined,
-            ease: undefined,
-        })
+        sizer
+            //.setScale(scaleX, scaleY)
+                .popUp({
+                duration: undefined,
+                orientation: undefined,
+                ease: undefined,
+            })
         ```
         or
         ```javascript
-        sizer.popUpPromise(config)
+        sizer
+            //.setScale(scaleX, scaleY)
+            .popUpPromise(config)
             .then(function() {
                 // ....
             })
@@ -322,7 +341,14 @@ sizer.pushIntoBounds(bounds);
     ```
     or
     ```javascript
-    sizer.fadeInPromise(duration)
+    sizer.fadeInPromise(duration, endAlpha)
+        .then(function(){
+            // ...
+        })
+    ```
+    or
+    ```javascript
+    sizer.fadeInPromise(duration, {start:0, end:1})
         .then(function(){
             // ...
         })
@@ -451,6 +477,20 @@ sizer.pushIntoBounds(bounds);
         sizer.on('moveto.complete', function(sizer) { });
         ```
 
+### Shake
+
+```javascript
+sizer.shake(duration);
+// sizer.shake(duration, magnitude);
+```
+or
+```javascript
+sizer.shakePromise(duration, magnitude)
+    .then(function(){
+        // ...
+    })
+```
+
 ### Drag top-most sizer
 
 - Draggable child
@@ -491,6 +531,13 @@ sizer.pushIntoBounds(bounds);
     // sizer.onClick(callback, scope, config);
     ```
     - `config` : See [Button](button.md#create-instance)
+    - `callback` :
+        ```javascript
+        function(button, gameObject, pointer, event) {
+
+        }
+        ```
+        - `button` : [Button](button.md) behavior.
 - Turn off click event
     ```javascript
     sizer.offClick(callback, scope);
