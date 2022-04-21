@@ -376,11 +376,23 @@
   var Components = Phaser.GameObjects.Components;
   Phaser.Class.mixin(Base, [Components.Alpha, Components.Flip]);
 
-  var GetParent = function GetParent(gameObject) {
+  var GetParent = function GetParent(gameObject, name) {
     var parent;
 
-    if (gameObject.hasOwnProperty('rexContainer')) {
-      parent = gameObject.rexContainer.parent;
+    if (name === undefined) {
+      if (gameObject.hasOwnProperty('rexContainer')) {
+        parent = gameObject.rexContainer.parent;
+      }
+    } else {
+      parent = GetParent(gameObject);
+
+      while (parent) {
+        if (parent.name === name) {
+          break;
+        }
+
+        parent = GetParent(parent);
+      }
     }
 
     return parent;
@@ -407,10 +419,14 @@
         self: null,
         x: 0,
         y: 0,
+        syncPosition: true,
         rotation: 0,
+        syncRotation: true,
         scaleX: 0,
         scaleY: 0,
+        syncScale: true,
         alpha: 0,
+        syncAlpha: true,
         visible: true,
         active: true
       };
@@ -464,12 +480,17 @@
 
       return this;
     },
-    getParent: function getParent(gameObject) {
+    getParent: function getParent(gameObject, name) {
+      if (typeof gameObject === 'string') {
+        name = gameObject;
+        gameObject = undefined;
+      }
+
       if (gameObject === undefined) {
         gameObject = this;
       }
 
-      return GetParent(gameObject);
+      return GetParent(gameObject, name);
     },
     getTopmostParent: function getTopmostParent(gameObject) {
       if (gameObject === undefined) {
@@ -480,10 +501,13 @@
     }
   };
 
+  var GetValue$8 = Phaser.Utils.Objects.GetValue;
   var BaseAdd = Base.prototype.add;
 
-  var Add = function Add(gameObject) {
+  var Add = function Add(gameObject, config) {
     this.setParent(gameObject);
+    var state = GetLocalState(gameObject);
+    SetupSyncFlags(state, config);
     this.resetChildState(gameObject) // Reset local state of child
     .updateChildVisible(gameObject) // Apply parent's visible to child
     .updateChildActive(gameObject) // Apply parent's active to child
@@ -494,10 +518,11 @@
     return this;
   };
 
-  var AddLocal = function AddLocal(gameObject) {
+  var AddLocal = function AddLocal(gameObject, config) {
     this.setParent(gameObject); // Set local state from child directly
 
-    var state = GetLocalState(gameObject); // Position
+    var state = GetLocalState(gameObject);
+    SetupSyncFlags(state, config); // Position
 
     state.x = gameObject.x;
     state.y = gameObject.y;
@@ -519,6 +544,13 @@
     return this;
   };
 
+  var SetupSyncFlags = function SetupSyncFlags(state, config) {
+    state.syncPosition = GetValue$8(config, 'syncPosition', true);
+    state.syncRotation = GetValue$8(config, 'syncRotation', true);
+    state.syncScale = GetValue$8(config, 'syncScale', true);
+    state.syncAlpha = GetValue$8(config, 'syncAlpha', true);
+  };
+
   var AddChild = {
     // Can override this method
     add: function add(gameObject) {
@@ -531,11 +563,11 @@
       return this;
     },
     // Don't override this method
-    pin: function pin(gameObject) {
+    pin: function pin(gameObject, config) {
       if (Array.isArray(gameObject)) {
-        this.addMultiple(gameObject);
+        this.addMultiple(gameObject, config);
       } else {
-        Add.call(this, gameObject);
+        Add.call(this, gameObject, config);
       }
 
       return this;
@@ -552,6 +584,16 @@
         this.addMultiple(gameObject);
       } else {
         AddLocal.call(this, gameObject);
+      }
+
+      return this;
+    },
+    // Don't override this method
+    pinLocal: function pinLocal(gameObject, config) {
+      if (Array.isArray(gameObject)) {
+        this.addMultiple(gameObject, config);
+      } else {
+        AddLocal.call(this, gameObject, config);
       }
 
       return this;
@@ -650,12 +692,21 @@
 
       var state = GetLocalState(child);
       var parent = state.parent;
-      child.x = state.x;
-      child.y = state.y;
-      parent.localToWorld(child);
-      child.scaleX = state.scaleX * parent.scaleX;
-      child.scaleY = state.scaleY * parent.scaleY;
-      child.rotation = state.rotation + parent.rotation;
+
+      if (state.syncPosition) {
+        child.x = state.x;
+        child.y = state.y;
+        parent.localToWorld(child);
+      }
+
+      if (state.syncRotation) {
+        child.rotation = state.rotation + parent.rotation;
+      }
+
+      if (state.syncScale) {
+        child.scaleX = state.scaleX * parent.scaleX;
+        child.scaleY = state.scaleY * parent.scaleY;
+      }
 
       if (child.isRexContainerLite) {
         child.syncChildrenEnable = true;
@@ -708,9 +759,13 @@
 
   var Rotation = {
     updateChildRotation: function updateChildRotation(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      child.rotation = parent.rotation + localState.rotation;
+      var state = GetLocalState(child);
+      var parent = state.parent;
+
+      if (state.syncRotation) {
+        child.rotation = parent.rotation + state.rotation;
+      }
+
       return this;
     },
     syncRotation: function syncRotation() {
@@ -721,9 +776,9 @@
       return this;
     },
     resetChildRotationState: function resetChildRotationState(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      localState.rotation = child.rotation - parent.rotation;
+      var state = GetLocalState(child);
+      var parent = state.parent;
+      state.rotation = child.rotation - parent.rotation;
       return this;
     },
     setChildRotation: function setChildRotation(child, rotation) {
@@ -737,8 +792,8 @@
       return this;
     },
     setChildLocalRotation: function setChildLocalRotation(child, rotation) {
-      var localState = GetLocalState(child);
-      localState.rotation = rotation;
+      var state = GetLocalState(child);
+      state.rotation = rotation;
       this.updateChildRotation(child);
       return this;
     },
@@ -755,10 +810,14 @@
 
   var Scale = {
     updateChildScale: function updateChildScale(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      child.scaleX = parent.scaleX * localState.scaleX;
-      child.scaleY = parent.scaleY * localState.scaleY;
+      var state = GetLocalState(child);
+      var parent = state.parent;
+
+      if (state.syncScale) {
+        child.scaleX = parent.scaleX * state.scaleX;
+        child.scaleY = parent.scaleY * state.scaleY;
+      }
+
       return this;
     },
     syncScale: function syncScale() {
@@ -769,10 +828,10 @@
       return this;
     },
     resetChildScaleState: function resetChildScaleState(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      localState.scaleX = GetScale(child.scaleX, parent.scaleX);
-      localState.scaleY = GetScale(child.scaleY, parent.scaleY);
+      var state = GetLocalState(child);
+      var parent = state.parent;
+      state.scaleX = GetScale(child.scaleX, parent.scaleX);
+      state.scaleY = GetScale(child.scaleY, parent.scaleY);
       return this;
     },
     setChildScale: function setChildScale(child, scaleX, scaleY) {
@@ -790,9 +849,9 @@
         scaleY = scaleX;
       }
 
-      var localState = GetLocalState(child);
-      localState.scaleX = scaleX;
-      localState.scaleY = scaleY;
+      var state = GetLocalState(child);
+      state.scaleX = scaleX;
+      state.scaleY = scaleY;
       this.updateChildScale(child);
       return this;
     },
@@ -889,9 +948,13 @@
 
   var Alpha = {
     updateChildAlpha: function updateChildAlpha(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      child.alpha = parent.alpha * localState.alpha;
+      var state = GetLocalState(child);
+      var parent = state.parent;
+
+      if (state.syncAlpha) {
+        child.alpha = parent.alpha * state.alpha;
+      }
+
       return this;
     },
     syncAlpha: function syncAlpha() {
@@ -902,9 +965,9 @@
       return this;
     },
     resetChildAlphaState: function resetChildAlphaState(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      localState.alpha = GetScale(child.alpha, parent.alpha);
+      var state = GetLocalState(child);
+      var parent = state.parent;
+      state.alpha = GetScale(child.alpha, parent.alpha);
       return this;
     },
     setChildAlpha: function setChildAlpha(child, alpha) {
@@ -913,8 +976,8 @@
       return this;
     },
     setChildLocalAlpha: function setChildLocalAlpha(child, alpha) {
-      var localState = GetLocalState(child);
-      localState.alpha = alpha;
+      var state = GetLocalState(child);
+      state.alpha = alpha;
       this.updateChildAlpha(child);
       return this;
     },
@@ -1524,6 +1587,21 @@
       } // Override
 
     }, {
+      key: "scale",
+      get: function get() {
+        return _get(_getPrototypeOf(ContainerLite.prototype), "scale", this);
+      },
+      set: function set(value) {
+        if (this.scale === value) {
+          return;
+        }
+
+        _set(_getPrototypeOf(ContainerLite.prototype), "scale", value, this, true);
+
+        this.syncPosition();
+      } // Override
+
+    }, {
       key: "visible",
       get: function get() {
         return _get(_getPrototypeOf(ContainerLite.prototype), "visible", this);
@@ -1771,7 +1849,7 @@
 
       if (this.parent && this.parent === this.scene) {
         // parent is a scene
-        this.scene.events.once('shutdown', this.onSceneDestroy, this);
+        this.scene.sys.events.once('shutdown', this.onSceneDestroy, this);
       } else if (this.parent && this.parent.once) {
         // bob object does not have event emitter
         this.parent.once('destroy', this.onParentDestroy, this);
@@ -1789,7 +1867,7 @@
 
         if (this.parent && this.parent === this.scene) {
           // parent is a scene
-          this.scene.events.off('shutdown', this.onSceneDestroy, this);
+          this.scene.sys.events.off('shutdown', this.onSceneDestroy, this);
         } else if (this.parent && this.parent.once) {
           // bob object does not have event emitter
           this.parent.off('destroy', this.onParentDestroy, this);
@@ -1979,7 +2057,7 @@
       value: function startTicking() {
         _get(_getPrototypeOf(SceneUpdateTickTask.prototype), "startTicking", this).call(this);
 
-        this.scene.events.on('update', this.update, this);
+        this.scene.sys.events.on('update', this.update, this);
       }
     }, {
       key: "stopTicking",
@@ -1988,7 +2066,7 @@
 
         if (this.scene) {
           // Scene might be destoryed
-          this.scene.events.off('update', this.update, this);
+          this.scene.sys.events.off('update', this.update, this);
         }
       } // update(time, delta) {
       //     
@@ -2146,6 +2224,12 @@
         }
       }
     }, {
+      key: "setT",
+      value: function setT(t) {
+        this.t = t;
+        return this;
+      }
+    }, {
       key: "isIdle",
       get: function get() {
         return this.state === IDLE;
@@ -2272,6 +2356,7 @@
       value: function resetFromJSON(o) {
         this.timer.resetFromJSON(GetValue$4(o, 'timer'));
         this.setEnable(GetValue$4(o, 'enable', true));
+        this.setTarget(GetValue$4(o, 'target', this.parent));
         this.setDelay(GetAdvancedValue$1(o, 'delay', 0));
         this.setDuration(GetAdvancedValue$1(o, 'duration', 1000));
         this.setEase(GetValue$4(o, 'ease', 'Linear'));
@@ -2286,6 +2371,16 @@
         }
 
         this.enable = e;
+        return this;
+      }
+    }, {
+      key: "setTarget",
+      value: function setTarget(target) {
+        if (target === undefined) {
+          target = this.parent;
+        }
+
+        this.target = target;
         return this;
       }
     }, {
@@ -2338,26 +2433,38 @@
         return this;
       }
     }, {
+      key: "stop",
+      value: function stop(toEnd) {
+        if (toEnd === undefined) {
+          toEnd = false;
+        }
+
+        _get(_getPrototypeOf(EaseValueTaskBase.prototype), "stop", this).call(this);
+
+        if (toEnd) {
+          this.timer.setT(1);
+          this.updateGameObject(this.target, this.timer);
+          this.complete();
+        }
+
+        return this;
+      }
+    }, {
       key: "update",
       value: function update(time, delta) {
-        if (!this.isRunning || !this.enable) {
+        if (!this.isRunning || !this.enable || !this.parent.active) {
           return this;
         }
 
-        var gameObject = this.parent;
-
-        if (!gameObject.active) {
-          return this;
-        }
-
-        var timer = this.timer;
+        var target = this.target,
+            timer = this.timer;
         timer.update(time, delta); // isDelay, isCountDown, isDone
 
         if (!timer.isDelay) {
-          this.updateGameObject(gameObject, timer);
+          this.updateGameObject(target, timer);
         }
 
-        this.emit('update', gameObject, this);
+        this.emit('update', target, this);
 
         if (timer.isDone) {
           this.complete();
@@ -2368,7 +2475,7 @@
 
     }, {
       key: "updateGameObject",
-      value: function updateGameObject(gameObject, timer) {}
+      value: function updateGameObject(target, timer) {}
     }]);
 
     return EaseValueTaskBase;
@@ -2404,15 +2511,15 @@
           return this;
         }
 
-        var gameObject = this.parent;
+        var target = this.target;
         this.propertyKey = GetValue$3(config, 'key', 'value');
-        var currentValue = gameObject[this.propertyKey];
+        var currentValue = target[this.propertyKey];
         this.fromValue = GetValue$3(config, 'from', currentValue);
         this.toValue = GetValue$3(config, 'to', currentValue);
         this.setEase(GetValue$3(config, 'ease', this.ease));
         this.setDuration(GetValue$3(config, 'duration', this.duration));
         this.timer.setDuration(this.duration);
-        gameObject[this.propertyKey] = this.fromValue;
+        target[this.propertyKey] = this.fromValue;
 
         _get(_getPrototypeOf(EaseValueTask.prototype), "start", this).call(this);
 
@@ -2420,10 +2527,10 @@
       }
     }, {
       key: "updateGameObject",
-      value: function updateGameObject(gameObject, timer) {
+      value: function updateGameObject(target, timer) {
         var t = timer.t;
         t = this.easeFn(t);
-        gameObject[this.propertyKey] = Linear(this.fromValue, this.toValue, t);
+        target[this.propertyKey] = Linear(this.fromValue, this.toValue, t);
       }
     }]);
 
@@ -2791,7 +2898,7 @@
       getFrameNameCallback = GetFrameNameCallback(frame, getFrameNameCallback);
     }
 
-    var texture = scene.textures.get(key);
+    var texture = scene.sys.textures.get(key);
     var baseFrame = texture.frames[frame];
     var cellWidth = baseFrame.width / columns,
         cellHeight = baseFrame.height / rows;

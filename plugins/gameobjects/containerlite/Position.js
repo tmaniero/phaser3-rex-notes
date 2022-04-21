@@ -8,14 +8,21 @@ export default {
         }
         var state = GetLocalState(child);
         var parent = state.parent;
-        child.x = state.x;
-        child.y = state.y;
-        parent.localToWorld(child);
 
-        child.scaleX = state.scaleX * parent.scaleX;
-        child.scaleY = state.scaleY * parent.scaleY;
+        if (state.syncPosition) {
+            child.x = state.x;
+            child.y = state.y;
+            parent.localToWorld(child);
+        }
 
-        child.rotation = state.rotation + parent.rotation;
+        if (state.syncRotation) {
+            child.rotation = state.rotation + parent.rotation;
+        }
+
+        if (state.syncScale) {
+            child.scaleX = state.scaleX * parent.scaleX;
+            child.scaleY = state.scaleY * parent.scaleY;
+        }
 
         if (child.isRexContainerLite) {
             child.syncChildrenEnable = true;

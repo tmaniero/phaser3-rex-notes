@@ -293,7 +293,7 @@
 
   var Mesh = Phaser.GameObjects.Mesh;
   var IsPlainObject$6 = Phaser.Utils.Objects.IsPlainObject;
-  var GetValue$d = Phaser.Utils.Objects.GetValue;
+  var GetValue$e = Phaser.Utils.Objects.GetValue;
   var GenerateGridVerts = Phaser.Geom.Mesh.GenerateGridVerts;
   var RadToDeg$4 = Phaser.Math.RadToDeg;
   var DegToRad$5 = Phaser.Math.DegToRad;
@@ -312,10 +312,10 @@
 
       if (IsPlainObject$6(x)) {
         config = x;
-        x = GetValue$d(config, 'x', 0);
-        y = GetValue$d(config, 'y', 0);
-        key = GetValue$d(config, 'key', null);
-        frame = GetValue$d(config, 'frame', null);
+        x = GetValue$e(config, 'x', 0);
+        y = GetValue$e(config, 'y', 0);
+        key = GetValue$e(config, 'key', null);
+        frame = GetValue$e(config, 'frame', null);
       }
 
       _this = _super.call(this, scene, x, y, key, frame);
@@ -327,9 +327,9 @@
 
       _this.panZ(PanZ);
 
-      _this.hideCCW = GetValue$d(config, 'hideCCW', true);
-      var gridWidth = GetValue$d(config, 'gridWidth', 32);
-      var gridHeight = GetValue$d(config, 'gridHeight', gridWidth);
+      _this.hideCCW = GetValue$e(config, 'hideCCW', true);
+      var gridWidth = GetValue$e(config, 'gridWidth', 32);
+      var gridHeight = GetValue$e(config, 'gridHeight', gridWidth);
 
       _this.resetVerts(gridWidth, gridHeight);
 
@@ -500,7 +500,7 @@
 
   var RT = Phaser.GameObjects.RenderTexture;
   var IsPlainObject$5 = Phaser.Utils.Objects.IsPlainObject;
-  var GetValue$c = Phaser.Utils.Objects.GetValue;
+  var GetValue$d = Phaser.Utils.Objects.GetValue;
 
   var RenderTexture = /*#__PURE__*/function (_Image) {
     _inherits(RenderTexture, _Image);
@@ -514,10 +514,10 @@
 
       if (IsPlainObject$5(x)) {
         config = x;
-        x = GetValue$c(config, 'x', 0);
-        y = GetValue$c(config, 'y', 0);
-        width = GetValue$c(config, 'width', 32);
-        height = GetValue$c(config, 'height', 32);
+        x = GetValue$d(config, 'x', 0);
+        y = GetValue$d(config, 'y', 0);
+        width = GetValue$d(config, 'width', 32);
+        height = GetValue$d(config, 'height', 32);
       } // render-texture -> perspective-image
 
 
@@ -569,7 +569,7 @@
 
   var AnimationState = Phaser.Animations.AnimationState;
   var IsPlainObject$4 = Phaser.Utils.Objects.IsPlainObject;
-  var GetValue$b = Phaser.Utils.Objects.GetValue;
+  var GetValue$c = Phaser.Utils.Objects.GetValue;
 
   var Sprite = /*#__PURE__*/function (_PerspectiveImage) {
     _inherits(Sprite, _PerspectiveImage);
@@ -583,10 +583,10 @@
 
       if (IsPlainObject$4(x)) {
         config = x;
-        x = GetValue$b(config, 'x', 0);
-        y = GetValue$b(config, 'y', 0);
-        key = GetValue$b(config, 'key', null);
-        frame = GetValue$b(config, 'frame', null);
+        x = GetValue$c(config, 'x', 0);
+        y = GetValue$c(config, 'y', 0);
+        key = GetValue$c(config, 'key', null);
+        frame = GetValue$c(config, 'frame', null);
       }
 
       _this = _super.call(this, scene, x, y, key, frame, config);
@@ -814,11 +814,23 @@
   var Components = Phaser.GameObjects.Components;
   Phaser.Class.mixin(Base, [Components.Alpha, Components.Flip]);
 
-  var GetParent = function GetParent(gameObject) {
+  var GetParent = function GetParent(gameObject, name) {
     var parent;
 
-    if (gameObject.hasOwnProperty('rexContainer')) {
-      parent = gameObject.rexContainer.parent;
+    if (name === undefined) {
+      if (gameObject.hasOwnProperty('rexContainer')) {
+        parent = gameObject.rexContainer.parent;
+      }
+    } else {
+      parent = GetParent(gameObject);
+
+      while (parent) {
+        if (parent.name === name) {
+          break;
+        }
+
+        parent = GetParent(parent);
+      }
     }
 
     return parent;
@@ -845,10 +857,14 @@
         self: null,
         x: 0,
         y: 0,
+        syncPosition: true,
         rotation: 0,
+        syncRotation: true,
         scaleX: 0,
         scaleY: 0,
+        syncScale: true,
         alpha: 0,
+        syncAlpha: true,
         visible: true,
         active: true
       };
@@ -902,12 +918,17 @@
 
       return this;
     },
-    getParent: function getParent(gameObject) {
+    getParent: function getParent(gameObject, name) {
+      if (typeof gameObject === 'string') {
+        name = gameObject;
+        gameObject = undefined;
+      }
+
       if (gameObject === undefined) {
         gameObject = this;
       }
 
-      return GetParent(gameObject);
+      return GetParent(gameObject, name);
     },
     getTopmostParent: function getTopmostParent(gameObject) {
       if (gameObject === undefined) {
@@ -918,10 +939,13 @@
     }
   };
 
+  var GetValue$b = Phaser.Utils.Objects.GetValue;
   var BaseAdd = Base.prototype.add;
 
-  var Add = function Add(gameObject) {
+  var Add = function Add(gameObject, config) {
     this.setParent(gameObject);
+    var state = GetLocalState(gameObject);
+    SetupSyncFlags(state, config);
     this.resetChildState(gameObject) // Reset local state of child
     .updateChildVisible(gameObject) // Apply parent's visible to child
     .updateChildActive(gameObject) // Apply parent's active to child
@@ -932,10 +956,11 @@
     return this;
   };
 
-  var AddLocal = function AddLocal(gameObject) {
+  var AddLocal = function AddLocal(gameObject, config) {
     this.setParent(gameObject); // Set local state from child directly
 
-    var state = GetLocalState(gameObject); // Position
+    var state = GetLocalState(gameObject);
+    SetupSyncFlags(state, config); // Position
 
     state.x = gameObject.x;
     state.y = gameObject.y;
@@ -957,6 +982,13 @@
     return this;
   };
 
+  var SetupSyncFlags = function SetupSyncFlags(state, config) {
+    state.syncPosition = GetValue$b(config, 'syncPosition', true);
+    state.syncRotation = GetValue$b(config, 'syncRotation', true);
+    state.syncScale = GetValue$b(config, 'syncScale', true);
+    state.syncAlpha = GetValue$b(config, 'syncAlpha', true);
+  };
+
   var AddChild = {
     // Can override this method
     add: function add(gameObject) {
@@ -969,11 +1001,11 @@
       return this;
     },
     // Don't override this method
-    pin: function pin(gameObject) {
+    pin: function pin(gameObject, config) {
       if (Array.isArray(gameObject)) {
-        this.addMultiple(gameObject);
+        this.addMultiple(gameObject, config);
       } else {
-        Add.call(this, gameObject);
+        Add.call(this, gameObject, config);
       }
 
       return this;
@@ -990,6 +1022,16 @@
         this.addMultiple(gameObject);
       } else {
         AddLocal.call(this, gameObject);
+      }
+
+      return this;
+    },
+    // Don't override this method
+    pinLocal: function pinLocal(gameObject, config) {
+      if (Array.isArray(gameObject)) {
+        this.addMultiple(gameObject, config);
+      } else {
+        AddLocal.call(this, gameObject, config);
       }
 
       return this;
@@ -1046,14 +1088,14 @@
     }
   };
 
-  var RotateAround$1 = Phaser.Math.RotateAround;
+  var RotateAround$2 = Phaser.Math.RotateAround;
   var Transform = {
     worldToLocal: function worldToLocal(point) {
       // Transform
       point.x -= this.x;
       point.y -= this.y; // Rotate
 
-      RotateAround$1(point, 0, 0, -this.rotation); // Scale
+      RotateAround$2(point, 0, 0, -this.rotation); // Scale
 
       point.x /= this.scaleX;
       point.y /= this.scaleY;
@@ -1064,7 +1106,7 @@
       point.x *= this.scaleX;
       point.y *= this.scaleY; // Rotate
 
-      RotateAround$1(point, 0, 0, this.rotation); // Transform
+      RotateAround$2(point, 0, 0, this.rotation); // Transform
 
       point.x += this.x;
       point.y += this.y;
@@ -1088,12 +1130,21 @@
 
       var state = GetLocalState(child);
       var parent = state.parent;
-      child.x = state.x;
-      child.y = state.y;
-      parent.localToWorld(child);
-      child.scaleX = state.scaleX * parent.scaleX;
-      child.scaleY = state.scaleY * parent.scaleY;
-      child.rotation = state.rotation + parent.rotation;
+
+      if (state.syncPosition) {
+        child.x = state.x;
+        child.y = state.y;
+        parent.localToWorld(child);
+      }
+
+      if (state.syncRotation) {
+        child.rotation = state.rotation + parent.rotation;
+      }
+
+      if (state.syncScale) {
+        child.scaleX = state.scaleX * parent.scaleX;
+        child.scaleY = state.scaleY * parent.scaleY;
+      }
 
       if (child.isRexContainerLite) {
         child.syncChildrenEnable = true;
@@ -1146,9 +1197,13 @@
 
   var Rotation = {
     updateChildRotation: function updateChildRotation(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      child.rotation = parent.rotation + localState.rotation;
+      var state = GetLocalState(child);
+      var parent = state.parent;
+
+      if (state.syncRotation) {
+        child.rotation = parent.rotation + state.rotation;
+      }
+
       return this;
     },
     syncRotation: function syncRotation() {
@@ -1159,9 +1214,9 @@
       return this;
     },
     resetChildRotationState: function resetChildRotationState(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      localState.rotation = child.rotation - parent.rotation;
+      var state = GetLocalState(child);
+      var parent = state.parent;
+      state.rotation = child.rotation - parent.rotation;
       return this;
     },
     setChildRotation: function setChildRotation(child, rotation) {
@@ -1175,8 +1230,8 @@
       return this;
     },
     setChildLocalRotation: function setChildLocalRotation(child, rotation) {
-      var localState = GetLocalState(child);
-      localState.rotation = rotation;
+      var state = GetLocalState(child);
+      state.rotation = rotation;
       this.updateChildRotation(child);
       return this;
     },
@@ -1193,10 +1248,14 @@
 
   var Scale = {
     updateChildScale: function updateChildScale(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      child.scaleX = parent.scaleX * localState.scaleX;
-      child.scaleY = parent.scaleY * localState.scaleY;
+      var state = GetLocalState(child);
+      var parent = state.parent;
+
+      if (state.syncScale) {
+        child.scaleX = parent.scaleX * state.scaleX;
+        child.scaleY = parent.scaleY * state.scaleY;
+      }
+
       return this;
     },
     syncScale: function syncScale() {
@@ -1207,10 +1266,10 @@
       return this;
     },
     resetChildScaleState: function resetChildScaleState(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      localState.scaleX = GetScale(child.scaleX, parent.scaleX);
-      localState.scaleY = GetScale(child.scaleY, parent.scaleY);
+      var state = GetLocalState(child);
+      var parent = state.parent;
+      state.scaleX = GetScale(child.scaleX, parent.scaleX);
+      state.scaleY = GetScale(child.scaleY, parent.scaleY);
       return this;
     },
     setChildScale: function setChildScale(child, scaleX, scaleY) {
@@ -1228,9 +1287,9 @@
         scaleY = scaleX;
       }
 
-      var localState = GetLocalState(child);
-      localState.scaleX = scaleX;
-      localState.scaleY = scaleY;
+      var state = GetLocalState(child);
+      state.scaleX = scaleX;
+      state.scaleY = scaleY;
       this.updateChildScale(child);
       return this;
     },
@@ -1327,9 +1386,13 @@
 
   var Alpha = {
     updateChildAlpha: function updateChildAlpha(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      child.alpha = parent.alpha * localState.alpha;
+      var state = GetLocalState(child);
+      var parent = state.parent;
+
+      if (state.syncAlpha) {
+        child.alpha = parent.alpha * state.alpha;
+      }
+
       return this;
     },
     syncAlpha: function syncAlpha() {
@@ -1340,9 +1403,9 @@
       return this;
     },
     resetChildAlphaState: function resetChildAlphaState(child) {
-      var localState = GetLocalState(child);
-      var parent = localState.parent;
-      localState.alpha = GetScale(child.alpha, parent.alpha);
+      var state = GetLocalState(child);
+      var parent = state.parent;
+      state.alpha = GetScale(child.alpha, parent.alpha);
       return this;
     },
     setChildAlpha: function setChildAlpha(child, alpha) {
@@ -1351,8 +1414,8 @@
       return this;
     },
     setChildLocalAlpha: function setChildLocalAlpha(child, alpha) {
-      var localState = GetLocalState(child);
-      localState.alpha = alpha;
+      var state = GetLocalState(child);
+      state.alpha = alpha;
       this.updateChildAlpha(child);
       return this;
     },
@@ -1808,7 +1871,7 @@
     addToContainer: AddToLayer
   };
 
-  var RotateAround = Phaser.Math.RotateAround;
+  var RotateAround$1 = Phaser.Math.RotateAround;
 
   var ChangeOrigin$1 = function ChangeOrigin(gameObject, originX, originY) {
     if (originY === undefined) {
@@ -1819,7 +1882,7 @@
       x: (originX - gameObject.originX) * gameObject.displayWidth,
       y: (originY - gameObject.originY) * gameObject.displayHeight
     };
-    RotateAround(deltaXY, 0, 0, gameObject.rotation);
+    RotateAround$1(deltaXY, 0, 0, gameObject.rotation);
     gameObject.originX = originX;
     gameObject.originY = originY;
     gameObject.x = gameObject.x + deltaXY.x;
@@ -1957,6 +2020,21 @@
         }
 
         _set(_getPrototypeOf(ContainerLite.prototype), "scaleY", value, this, true);
+
+        this.syncPosition();
+      } // Override
+
+    }, {
+      key: "scale",
+      get: function get() {
+        return _get(_getPrototypeOf(ContainerLite.prototype), "scale", this);
+      },
+      set: function set(value) {
+        if (this.scale === value) {
+          return;
+        }
+
+        _set(_getPrototypeOf(ContainerLite.prototype), "scale", value, this, true);
 
         this.syncPosition();
       } // Override
@@ -2451,7 +2529,7 @@
 
       if (this.parent && this.parent === this.scene) {
         // parent is a scene
-        this.scene.events.once('shutdown', this.onSceneDestroy, this);
+        this.scene.sys.events.once('shutdown', this.onSceneDestroy, this);
       } else if (this.parent && this.parent.once) {
         // bob object does not have event emitter
         this.parent.once('destroy', this.onParentDestroy, this);
@@ -2469,7 +2547,7 @@
 
         if (this.parent && this.parent === this.scene) {
           // parent is a scene
-          this.scene.events.off('shutdown', this.onSceneDestroy, this);
+          this.scene.sys.events.off('shutdown', this.onSceneDestroy, this);
         } else if (this.parent && this.parent.once) {
           // bob object does not have event emitter
           this.parent.off('destroy', this.onParentDestroy, this);
@@ -2659,7 +2737,7 @@
       value: function startTicking() {
         _get(_getPrototypeOf(SceneUpdateTickTask.prototype), "startTicking", this).call(this);
 
-        this.scene.events.on('update', this.update, this);
+        this.scene.sys.events.on('update', this.update, this);
       }
     }, {
       key: "stopTicking",
@@ -2668,7 +2746,7 @@
 
         if (this.scene) {
           // Scene might be destoryed
-          this.scene.events.off('update', this.update, this);
+          this.scene.sys.events.off('update', this.update, this);
         }
       } // update(time, delta) {
       //     
@@ -2826,6 +2904,12 @@
         }
       }
     }, {
+      key: "setT",
+      value: function setT(t) {
+        this.t = t;
+        return this;
+      }
+    }, {
       key: "isIdle",
       get: function get() {
         return this.state === IDLE;
@@ -2952,6 +3036,7 @@
       value: function resetFromJSON(o) {
         this.timer.resetFromJSON(GetValue$7(o, 'timer'));
         this.setEnable(GetValue$7(o, 'enable', true));
+        this.setTarget(GetValue$7(o, 'target', this.parent));
         this.setDelay(GetAdvancedValue(o, 'delay', 0));
         this.setDuration(GetAdvancedValue(o, 'duration', 1000));
         this.setEase(GetValue$7(o, 'ease', 'Linear'));
@@ -2966,6 +3051,16 @@
         }
 
         this.enable = e;
+        return this;
+      }
+    }, {
+      key: "setTarget",
+      value: function setTarget(target) {
+        if (target === undefined) {
+          target = this.parent;
+        }
+
+        this.target = target;
         return this;
       }
     }, {
@@ -3018,26 +3113,38 @@
         return this;
       }
     }, {
+      key: "stop",
+      value: function stop(toEnd) {
+        if (toEnd === undefined) {
+          toEnd = false;
+        }
+
+        _get(_getPrototypeOf(EaseValueTaskBase.prototype), "stop", this).call(this);
+
+        if (toEnd) {
+          this.timer.setT(1);
+          this.updateGameObject(this.target, this.timer);
+          this.complete();
+        }
+
+        return this;
+      }
+    }, {
       key: "update",
       value: function update(time, delta) {
-        if (!this.isRunning || !this.enable) {
+        if (!this.isRunning || !this.enable || !this.parent.active) {
           return this;
         }
 
-        var gameObject = this.parent;
-
-        if (!gameObject.active) {
-          return this;
-        }
-
-        var timer = this.timer;
+        var target = this.target,
+            timer = this.timer;
         timer.update(time, delta); // isDelay, isCountDown, isDone
 
         if (!timer.isDelay) {
-          this.updateGameObject(gameObject, timer);
+          this.updateGameObject(target, timer);
         }
 
-        this.emit('update', gameObject, this);
+        this.emit('update', target, this);
 
         if (timer.isDone) {
           this.complete();
@@ -3048,7 +3155,7 @@
 
     }, {
       key: "updateGameObject",
-      value: function updateGameObject(gameObject, timer) {}
+      value: function updateGameObject(target, timer) {}
     }]);
 
     return EaseValueTaskBase;
@@ -3778,7 +3885,7 @@
 
     if (Array.isArray(images)) {
       var textureKey = images[0];
-      var frame = scene.textures.getFrame(textureKey.key, textureKey.frame);
+      var frame = scene.sys.textures.getFrame(textureKey.key, textureKey.frame);
       result.width = frame.cutWidth;
       result.height = frame.cutHeight;
     } else {
@@ -3917,6 +4024,186 @@
     return gameObject;
   }
 
+  var GetDisplayWidth = function GetDisplayWidth(gameObject) {
+    if (gameObject.displayWidth !== undefined) {
+      return gameObject.displayWidth;
+    } else {
+      return gameObject.width;
+    }
+  };
+
+  var GetDisplayHeight = function GetDisplayHeight(gameObject) {
+    if (gameObject.displayHeight !== undefined) {
+      return gameObject.displayHeight;
+    } else {
+      return gameObject.height;
+    }
+  };
+
+  var Rectangle$1 = Phaser.Geom.Rectangle;
+  var Vector2 = Phaser.Geom.Vector2;
+  var RotateAround = Phaser.Math.RotateAround;
+
+  var GetBounds = function GetBounds(gameObject, output) {
+    if (output === undefined) {
+      output = new Rectangle$1();
+    } else if (output === true) {
+      if (GlobRect$1 === undefined) {
+        GlobRect$1 = new Rectangle$1();
+      }
+
+      output = GlobRect$1;
+    }
+
+    if (gameObject.getBounds) {
+      return gameObject.getBounds(output);
+    } //  We can use the output object to temporarily store the x/y coords in:
+
+
+    var TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy; // Instead of doing a check if parent container is
+    // defined per corner we only do it once.
+
+    if (gameObject.parentContainer) {
+      var parentMatrix = gameObject.parentContainer.getBoundsTransformMatrix();
+      GetTopLeft(gameObject, output);
+      parentMatrix.transformPoint(output.x, output.y, output);
+      TLx = output.x;
+      TLy = output.y;
+      GetTopRight(gameObject, output);
+      parentMatrix.transformPoint(output.x, output.y, output);
+      TRx = output.x;
+      TRy = output.y;
+      GetBottomLeft(gameObject, output);
+      parentMatrix.transformPoint(output.x, output.y, output);
+      BLx = output.x;
+      BLy = output.y;
+      GetBottomRight(gameObject, output);
+      parentMatrix.transformPoint(output.x, output.y, output);
+      BRx = output.x;
+      BRy = output.y;
+    } else {
+      GetTopLeft(gameObject, output);
+      TLx = output.x;
+      TLy = output.y;
+      GetTopRight(gameObject, output);
+      TRx = output.x;
+      TRy = output.y;
+      GetBottomLeft(gameObject, output);
+      BLx = output.x;
+      BLy = output.y;
+      GetBottomRight(gameObject, output);
+      BRx = output.x;
+      BRy = output.y;
+    }
+
+    output.x = Math.min(TLx, TRx, BLx, BRx);
+    output.y = Math.min(TLy, TRy, BLy, BRy);
+    output.width = Math.max(TLx, TRx, BLx, BRx) - output.x;
+    output.height = Math.max(TLy, TRy, BLy, BRy) - output.y;
+    return output;
+  };
+
+  var GlobRect$1 = undefined;
+
+  var GetTopLeft = function GetTopLeft(gameObject, output, includeParent) {
+    if (output === undefined) {
+      output = new Vector2();
+    } else if (output === true) {
+      if (GlobVector === undefined) {
+        GlobVector = new Vector2();
+      }
+
+      output = GlobVector;
+    }
+
+    if (gameObject.getTopLeft) {
+      return gameObject.getTopLeft(output);
+    }
+
+    output.x = gameObject.x - GetDisplayWidth(gameObject) * gameObject.originX;
+    output.y = gameObject.y - GetDisplayHeight(gameObject) * gameObject.originY;
+    return PrepareBoundsOutput(gameObject, output, includeParent);
+  };
+
+  var GetTopRight = function GetTopRight(gameObject, output, includeParent) {
+    if (output === undefined) {
+      output = new Vector2();
+    } else if (output === true) {
+      if (GlobVector === undefined) {
+        GlobVector = new Vector2();
+      }
+
+      output = GlobVector;
+    }
+
+    if (gameObject.getTopRight) {
+      return gameObject.getTopRight(output);
+    }
+
+    output.x = gameObject.x - GetDisplayWidth(gameObject) * gameObject.originX + GetDisplayWidth(gameObject);
+    output.y = gameObject.y - GetDisplayHeight(gameObject) * gameObject.originY;
+    return PrepareBoundsOutput(gameObject, output, includeParent);
+  };
+
+  var GetBottomLeft = function GetBottomLeft(gameObject, output, includeParent) {
+    if (output === undefined) {
+      output = new Vector2();
+    } else if (output === true) {
+      if (GlobVector === undefined) {
+        GlobVector = new Vector2();
+      }
+
+      output = GlobVector;
+    }
+
+    if (gameObject.getBottomLeft) {
+      return gameObject.getBottomLeft(output);
+    }
+
+    output.x = gameObject.x - GetDisplayWidth(gameObject) * gameObject.originX;
+    output.y = gameObject.y - GetDisplayHeight(gameObject) * gameObject.originY + GetDisplayHeight(gameObject);
+    return PrepareBoundsOutput(gameObject, output, includeParent);
+  };
+
+  var GetBottomRight = function GetBottomRight(gameObject, output, includeParent) {
+    if (output === undefined) {
+      output = new Vector2();
+    } else if (output === true) {
+      if (GlobVector === undefined) {
+        GlobVector = new Vector2();
+      }
+
+      output = GlobVector;
+    }
+
+    if (gameObject.getBottomRight) {
+      return gameObject.getBottomRight(output);
+    }
+
+    output.x = gameObject.x - GetDisplayWidth(gameObject) * gameObject.originX + GetDisplayWidth(gameObject);
+    output.y = gameObject.y - GetDisplayHeight(gameObject) * gameObject.originY + GetDisplayHeight(gameObject);
+    return PrepareBoundsOutput(gameObject, output, includeParent);
+  };
+
+  var GlobVector = undefined;
+
+  var PrepareBoundsOutput = function PrepareBoundsOutput(gameObject, output, includeParent) {
+    if (includeParent === undefined) {
+      includeParent = false;
+    }
+
+    if (gameObject.rotation !== 0) {
+      RotateAround(output, gameObject.x, gameObject.y, gameObject.rotation);
+    }
+
+    if (includeParent && gameObject.parentContainer) {
+      var parentMatrix = gameObject.parentContainer.getBoundsTransformMatrix();
+      parentMatrix.transformPoint(output.x, output.y, output);
+    }
+
+    return output;
+  };
+
   var Rectangle = Phaser.Geom.Rectangle;
   var Union = Phaser.Geom.Rectangle.Union;
 
@@ -3924,11 +4211,11 @@
     if (out === undefined) {
       out = new Rectangle();
     } else if (out === true) {
-      if (globBounds === undefined) {
-        globBounds = new Rectangle();
+      if (GlobRect === undefined) {
+        GlobRect = new Rectangle();
       }
 
-      out = globBounds;
+      out = GlobRect;
     }
 
     var gameObject;
@@ -3941,22 +4228,26 @@
         continue;
       }
 
-      GOBounds = gameObject.getBounds(GOBounds);
+      var boundsRect = GetBounds(gameObject, true);
 
       if (firstClone) {
-        out.setTo(GOBounds.x, GOBounds.y, GOBounds.width, GOBounds.height);
+        out.setTo(boundsRect.x, boundsRect.y, boundsRect.width, boundsRect.height);
         firstClone = false;
       } else {
-        Union(GOBounds, out, out);
+        Union(boundsRect, out, out);
       }
     }
 
     return out;
   };
 
-  var GOBounds, globBounds;
+  var GlobRect;
 
   var Clear = function Clear(obj) {
+    if (_typeof(obj) !== 'object' || obj === null) {
+      return obj;
+    }
+
     if (Array.isArray(obj)) {
       obj.length = 0;
     } else {
@@ -3964,6 +4255,8 @@
         delete obj[key];
       }
     }
+
+    return obj;
   };
 
   /**

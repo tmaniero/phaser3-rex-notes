@@ -5,6 +5,9 @@ Replace color post processing filter. [Reference](https://github.com/pixijs/filt
 - Author: Rex
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Live demos
 
 - [Color replace](https://codepen.io/rexrainbow/pen/mdwRpvW)

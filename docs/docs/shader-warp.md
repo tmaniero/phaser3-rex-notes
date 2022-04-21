@@ -5,6 +5,9 @@ Warp transition post processing filter.
 - Author: Richard Davey
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Usage
 
 [Reference](https://github.com/photonstorm/phaser3-warp-post-fx)

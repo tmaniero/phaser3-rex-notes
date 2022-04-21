@@ -1,6 +1,6 @@
 {
     "name": "phaser3-rex-plugins",
-    "version": "1.1.67",
+    "version": "1.1.68",
     "description": "Plugins of phaser3",
     "author": "Rex",
     "files": [
@@ -8,7 +8,6 @@
         "templates",
         "dist"
     ],
-    "main": "./plugins/index.js",
     "scripts": {
         "watch": "webpack --config webpack.config.js",
         "build": "rollup -c rollup.config.js"
@@ -27,6 +26,7 @@
     "homepage": "https://rexrainbow.github.io/phaser3-rex-notes/docs/site/index.html",
     "devDependencies": {
         "@babel/core": "^7.15.0",
+        "@babel/runtime": "^7.17.2",
         "@babel/plugin-transform-runtime": "^7.17.0",
         "@babel/polyfill": "^7.12.1",
         "@babel/preset-env": "^7.15.0",

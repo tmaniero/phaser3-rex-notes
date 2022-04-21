@@ -281,7 +281,7 @@
 
       if (this.parent && this.parent === this.scene) {
         // parent is a scene
-        this.scene.events.once('shutdown', this.onSceneDestroy, this);
+        this.scene.sys.events.once('shutdown', this.onSceneDestroy, this);
       } else if (this.parent && this.parent.once) {
         // bob object does not have event emitter
         this.parent.once('destroy', this.onParentDestroy, this);
@@ -299,7 +299,7 @@
 
         if (this.parent && this.parent === this.scene) {
           // parent is a scene
-          this.scene.events.off('shutdown', this.onSceneDestroy, this);
+          this.scene.sys.events.off('shutdown', this.onSceneDestroy, this);
         } else if (this.parent && this.parent.once) {
           // bob object does not have event emitter
           this.parent.off('destroy', this.onParentDestroy, this);
@@ -388,7 +388,7 @@
         }
 
         this.parent.on('pointermove', this.onPointerMove, this);
-        this.scene.events.on('preupdate', this.preupdate, this);
+        this.scene.sys.events.on('preupdate', this.preupdate, this);
       }
     }, {
       key: "shutdown",
@@ -403,7 +403,7 @@
         // this.parent.off('pointermove', this.onPointerMove, this);
 
 
-        this.scene.events.off('preupdate', this.preupdate, this);
+        this.scene.sys.events.off('preupdate', this.preupdate, this);
         this.pointer = undefined;
 
         _get(_getPrototypeOf(DragSpeed.prototype), "shutdown", this).call(this, fromScene);
@@ -542,10 +542,10 @@
 
         if (pointer && !this.isInTouched) {
           // Touch start
-          this.x = pointer.x;
-          this.y = pointer.y;
-          this.preX = pointer.x;
-          this.preY = pointer.y;
+          this.x = pointer.worldX;
+          this.y = pointer.worldY;
+          this.preX = pointer.worldX;
+          this.preY = pointer.worldY;
           this.isInTouched = true;
           this.holdStartTime = undefined;
           this.emit('touchstart', pointer, this.localX, this.localY);
@@ -563,8 +563,8 @@
             // Move
             this.preX = this.x;
             this.preY = this.y;
-            this.x = pointer.x;
-            this.y = pointer.y;
+            this.x = pointer.worldX;
+            this.y = pointer.worldY;
             this.holdStartTime = undefined;
             this.justMoved = true;
             this.emit('touchmove', pointer, this.localX, this.localY);

@@ -51,7 +51,7 @@ var createBtn = function (scene, config) {
         // clickInterval: 1000  // ms
     });
     btn.button.on('click', function (button, gameObject) {
-        scene.print.text += 'click ' + gameObject.name + '\n';
+        scene.print.text += `click ${gameObject.name}\n`;
     });
     return btn;
 }

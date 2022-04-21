@@ -27,7 +27,7 @@ class Demo extends Phaser.Scene {
     }
 }
 
-var polyfills = function() {
+var polyfills = function () {
     const Components = Phaser.GameObjects.Components;
     Phaser.Class.mixin(
         Phaser.GameObjects.BitmapText,

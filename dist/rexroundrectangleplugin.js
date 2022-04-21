@@ -160,26 +160,12 @@
       }
     }, {
       key: "setRadius",
-      value: function setRadius(config) {
-        if (config === undefined) {
-          config = 0;
+      value: function setRadius(value) {
+        if (value === undefined) {
+          value = 0;
         }
 
-        var defaultRadiusX, defaultRadiusY;
-
-        if (typeof config === 'number') {
-          defaultRadiusX = config;
-          defaultRadiusY = config;
-        } else {
-          defaultRadiusX = GetValue$2(config, 'x', 0);
-          defaultRadiusY = GetValue$2(config, 'y', 0);
-        }
-
-        var radius = this.cornerRadius;
-        radius.tl = GetRadius(GetValue$2(config, 'tl', undefined), defaultRadiusX, defaultRadiusY);
-        radius.tr = GetRadius(GetValue$2(config, 'tr', undefined), defaultRadiusX, defaultRadiusY);
-        radius.bl = GetRadius(GetValue$2(config, 'bl', undefined), defaultRadiusX, defaultRadiusY);
-        radius.br = GetRadius(GetValue$2(config, 'br', undefined), defaultRadiusX, defaultRadiusY);
+        this.radius = value;
         return this;
       }
     }, {
@@ -229,8 +215,60 @@
       key: "radius",
       get: function get() {
         var radius = this.cornerRadius;
-        var max = Math.max(radius.tl.x, radius.tl.y, radius.tr.x, radius.tr.y, radius.bl.x, radius.bl.y, radius.br.x, radius.br.y);
-        return max;
+        return Math.max(radius.tl.x, radius.tl.y, radius.tr.x, radius.tr.y, radius.bl.x, radius.bl.y, radius.br.x, radius.br.y);
+      },
+      set: function set(value) {
+        var defaultRadiusX, defaultRadiusY;
+
+        if (typeof value === 'number') {
+          defaultRadiusX = value;
+          defaultRadiusY = value;
+        } else {
+          defaultRadiusX = GetValue$2(value, 'x', 0);
+          defaultRadiusY = GetValue$2(value, 'y', 0);
+        }
+
+        var radius = this.cornerRadius;
+        radius.tl = GetRadius(GetValue$2(value, 'tl', undefined), defaultRadiusX, defaultRadiusY);
+        radius.tr = GetRadius(GetValue$2(value, 'tr', undefined), defaultRadiusX, defaultRadiusY);
+        radius.bl = GetRadius(GetValue$2(value, 'bl', undefined), defaultRadiusX, defaultRadiusY);
+        radius.br = GetRadius(GetValue$2(value, 'br', undefined), defaultRadiusX, defaultRadiusY);
+      }
+    }, {
+      key: "radiusTL",
+      get: function get() {
+        var radius = this.cornerRadius.tl;
+        return Math.max(radius.x, radius.y);
+      },
+      set: function set(value) {
+        SetRadius(this.cornerRadius.tl, value);
+      }
+    }, {
+      key: "radiusTR",
+      get: function get() {
+        var radius = this.cornerRadius.tr;
+        return Math.max(radius.x, radius.y);
+      },
+      set: function set(value) {
+        SetRadius(this.cornerRadius.tr, value);
+      }
+    }, {
+      key: "radiusBL",
+      get: function get() {
+        var radius = this.cornerRadius.bl;
+        return Math.max(radius.x, radius.y);
+      },
+      set: function set(value) {
+        SetRadius(this.cornerRadius.bl, value);
+      }
+    }, {
+      key: "radiusBR",
+      get: function get() {
+        var radius = this.cornerRadius.br;
+        return Math.max(radius.x, radius.y);
+      },
+      set: function set(value) {
+        SetRadius(this.cornerRadius.br, value);
       }
     }]);
 
@@ -250,6 +288,16 @@
       };
     } else {
       return radius;
+    }
+  };
+
+  var SetRadius = function SetRadius(radius, value) {
+    if (typeof value === 'number') {
+      radius.x = value;
+      radius.y = value;
+    } else {
+      radius.x = GetValue$2(value, 'x', 0);
+      radius.y = GetValue$2(value, 'y', 0);
     }
   };
 
@@ -366,62 +414,7 @@
     }
   };
 
-  /**
-   * @author       Richard Davey <rich@photonstorm.com>
-   * @copyright    2020 Photon Storm Ltd.
-   * @license      {@link https://opensource.org/licenses/MIT|MIT License}
-   */
-  var TransformMatrix = Phaser.GameObjects.Components.TransformMatrix;
-  var tempMatrix1 = new TransformMatrix();
-  var tempMatrix2 = new TransformMatrix();
-  var tempMatrix3 = new TransformMatrix();
-  var result = {
-    camera: tempMatrix1,
-    sprite: tempMatrix2,
-    calc: tempMatrix3
-  };
-  /**
-   * Calculates the Transform Matrix of the given Game Object and Camera, factoring in
-   * the parent matrix if provided.
-   *
-   * Note that the object this results contains _references_ to the Transform Matrices,
-   * not new instances of them. Therefore, you should use their values immediately, or
-   * copy them to your own matrix, as they will be replaced as soon as another Game
-   * Object is rendered.
-   *
-   * @function Phaser.GameObjects.GetCalcMatrix
-   * @memberof Phaser.GameObjects
-   * @since 3.50.0
-   *
-   * @param {Phaser.GameObjects.GameObject} src - The Game Object to calculate the transform matrix for.
-   * @param {Phaser.Cameras.Scene2D.Camera} camera - The camera being used to render the Game Object.
-   * @param {Phaser.GameObjects.Components.TransformMatrix} [parentMatrix] - The transform matrix of the parent container, if any.
-   *
-   * @return {Phaser.Types.GameObjects.GetCalcMatrixResults} The results object containing the updated transform matrices.
-   */
-
-  var GetCalcMatrix = function GetCalcMatrix(src, camera, parentMatrix) {
-    var camMatrix = tempMatrix1;
-    var spriteMatrix = tempMatrix2;
-    var calcMatrix = tempMatrix3;
-    spriteMatrix.applyITRS(src.x, src.y, src.rotation, src.scaleX, src.scaleY);
-    camMatrix.copyFrom(camera.matrix);
-
-    if (parentMatrix) {
-      //  Multiply the camera by the parent matrix
-      camMatrix.multiplyWithOffset(parentMatrix, -camera.scrollX * src.scrollFactorX, -camera.scrollY * src.scrollFactorY); //  Undo the camera scroll
-
-      spriteMatrix.e = src.x;
-      spriteMatrix.f = src.y;
-    } else {
-      spriteMatrix.e -= camera.scrollX * src.scrollFactorX;
-      spriteMatrix.f -= camera.scrollY * src.scrollFactorY;
-    } //  Multiply by the Sprite matrix, store result in calcMatrix
-
-
-    camMatrix.multiply(spriteMatrix, calcMatrix);
-    return result;
-  };
+  var GetCalcMatrix = Phaser.GameObjects.GetCalcMatrix;
 
   var PolygonWebGLRenderer = function PolygonWebGLRenderer(renderer, src, camera, parentMatrix) {
     if (src.dirty) {
@@ -709,6 +702,42 @@
         this.dirty = true;
       }
     }, {
+      key: "radiusTL",
+      get: function get() {
+        return this.geom.radiusTL;
+      },
+      set: function set(value) {
+        this.geom.radiusTL = value;
+        this.dirty = true;
+      }
+    }, {
+      key: "radiusTR",
+      get: function get() {
+        return this.geom.radiusTR;
+      },
+      set: function set(value) {
+        this.geom.radiusTR = value;
+        this.dirty = true;
+      }
+    }, {
+      key: "radiusBL",
+      get: function get() {
+        return this.geom.radiusBL;
+      },
+      set: function set(value) {
+        this.geom.radiusBL = value;
+        this.dirty = true;
+      }
+    }, {
+      key: "radiusBR",
+      get: function get() {
+        return this.geom.radiusBR;
+      },
+      set: function set(value) {
+        this.geom.radiusBR = value;
+        this.dirty = true;
+      }
+    }, {
       key: "setRadius",
       value: function setRadius(value) {
         if (value === undefined) {
@@ -716,6 +745,46 @@
         }
 
         this.radius = value;
+        return this;
+      }
+    }, {
+      key: "setRadiusTL",
+      value: function setRadiusTL(value) {
+        if (value === undefined) {
+          value = 0;
+        }
+
+        this.radiusTL = value;
+        return this;
+      }
+    }, {
+      key: "setRadiusTR",
+      value: function setRadiusTR(value) {
+        if (value === undefined) {
+          value = 0;
+        }
+
+        this.radiusTR = value;
+        return this;
+      }
+    }, {
+      key: "setRadiusBL",
+      value: function setRadiusBL(value) {
+        if (value === undefined) {
+          value = 0;
+        }
+
+        this.radiuBL = value;
+        return this;
+      }
+    }, {
+      key: "setRadiusBR",
+      value: function setRadiusBR(value) {
+        if (value === undefined) {
+          value = 0;
+        }
+
+        this.radiusBR = value;
         return this;
       }
     }, {

@@ -29,6 +29,16 @@ declare namespace Scrollable {
                 thumb?: Phaser.GameObjects.GameObject,
                 input?: SliderInputTypes,
                 position?: SliderPositionTypes,
+                adaptThumbSize?: boolean,
+                minThumbSize?: number,
+
+                buttons?: {
+                    top?: Phaser.GameObjects.GameObject,
+                    bottom?: Phaser.GameObjects.GameObject,
+                    left?: Phaser.GameObjects.GameObject,
+                    right?: Phaser.GameObjects.GameObject,
+                    step?: number
+                }
             } |
             boolean
         ),
@@ -78,6 +88,8 @@ declare class Scrollable extends Sizer {
     childOY: number;
     readonly topChildOY: number;
     readonly bottomChildOY: number;
+    readonly childVisibleHeight: number;
+    readonly childHeight: number;
     setChildOY(value: number, clamp?: boolean): this;
     addChildOY(inc: number, clamp?: boolean): this;
 

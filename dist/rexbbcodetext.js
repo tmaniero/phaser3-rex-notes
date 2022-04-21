@@ -178,7 +178,7 @@
    * @param {Phaser.GameObjects.Components.TransformMatrix} parentMatrix - This transform matrix is defined if the game object is nested
    */
 
-  var TextWebGLRenderer = function TextWebGLRenderer(renderer, src, camera, parentMatrix) {
+  var WebGLRenderer = function WebGLRenderer(renderer, src, camera, parentMatrix) {
     if (src.width === 0 || src.height === 0) {
       return;
     }
@@ -216,7 +216,7 @@
    * @param {Phaser.Cameras.Scene2D.Camera} camera - The Camera that is rendering the Game Object.
    * @param {Phaser.GameObjects.Components.TransformMatrix} parentMatrix - This transform matrix is defined if the game object is nested
    */
-  var TextCanvasRenderer = function TextCanvasRenderer(renderer, src, camera, parentMatrix) {
+  var CanvasRenderer = function CanvasRenderer(renderer, src, camera, parentMatrix) {
     if (src.width === 0 || src.height === 0) {
       return;
     }
@@ -226,8 +226,8 @@
   };
 
   var Render = {
-    renderWebGL: TextWebGLRenderer,
-    renderCanvas: TextCanvasRenderer
+    renderWebGL: WebGLRenderer,
+    renderCanvas: CanvasRenderer
   };
 
   /**
@@ -1136,26 +1136,12 @@
       }
     }, {
       key: "setRadius",
-      value: function setRadius(config) {
-        if (config === undefined) {
-          config = 0;
+      value: function setRadius(value) {
+        if (value === undefined) {
+          value = 0;
         }
 
-        var defaultRadiusX, defaultRadiusY;
-
-        if (typeof config === 'number') {
-          defaultRadiusX = config;
-          defaultRadiusY = config;
-        } else {
-          defaultRadiusX = GetValue$4(config, 'x', 0);
-          defaultRadiusY = GetValue$4(config, 'y', 0);
-        }
-
-        var radius = this.cornerRadius;
-        radius.tl = GetRadius(GetValue$4(config, 'tl', undefined), defaultRadiusX, defaultRadiusY);
-        radius.tr = GetRadius(GetValue$4(config, 'tr', undefined), defaultRadiusX, defaultRadiusY);
-        radius.bl = GetRadius(GetValue$4(config, 'bl', undefined), defaultRadiusX, defaultRadiusY);
-        radius.br = GetRadius(GetValue$4(config, 'br', undefined), defaultRadiusX, defaultRadiusY);
+        this.radius = value;
         return this;
       }
     }, {
@@ -1205,8 +1191,60 @@
       key: "radius",
       get: function get() {
         var radius = this.cornerRadius;
-        var max = Math.max(radius.tl.x, radius.tl.y, radius.tr.x, radius.tr.y, radius.bl.x, radius.bl.y, radius.br.x, radius.br.y);
-        return max;
+        return Math.max(radius.tl.x, radius.tl.y, radius.tr.x, radius.tr.y, radius.bl.x, radius.bl.y, radius.br.x, radius.br.y);
+      },
+      set: function set(value) {
+        var defaultRadiusX, defaultRadiusY;
+
+        if (typeof value === 'number') {
+          defaultRadiusX = value;
+          defaultRadiusY = value;
+        } else {
+          defaultRadiusX = GetValue$4(value, 'x', 0);
+          defaultRadiusY = GetValue$4(value, 'y', 0);
+        }
+
+        var radius = this.cornerRadius;
+        radius.tl = GetRadius(GetValue$4(value, 'tl', undefined), defaultRadiusX, defaultRadiusY);
+        radius.tr = GetRadius(GetValue$4(value, 'tr', undefined), defaultRadiusX, defaultRadiusY);
+        radius.bl = GetRadius(GetValue$4(value, 'bl', undefined), defaultRadiusX, defaultRadiusY);
+        radius.br = GetRadius(GetValue$4(value, 'br', undefined), defaultRadiusX, defaultRadiusY);
+      }
+    }, {
+      key: "radiusTL",
+      get: function get() {
+        var radius = this.cornerRadius.tl;
+        return Math.max(radius.x, radius.y);
+      },
+      set: function set(value) {
+        SetRadius(this.cornerRadius.tl, value);
+      }
+    }, {
+      key: "radiusTR",
+      get: function get() {
+        var radius = this.cornerRadius.tr;
+        return Math.max(radius.x, radius.y);
+      },
+      set: function set(value) {
+        SetRadius(this.cornerRadius.tr, value);
+      }
+    }, {
+      key: "radiusBL",
+      get: function get() {
+        var radius = this.cornerRadius.bl;
+        return Math.max(radius.x, radius.y);
+      },
+      set: function set(value) {
+        SetRadius(this.cornerRadius.bl, value);
+      }
+    }, {
+      key: "radiusBR",
+      get: function get() {
+        var radius = this.cornerRadius.br;
+        return Math.max(radius.x, radius.y);
+      },
+      set: function set(value) {
+        SetRadius(this.cornerRadius.br, value);
       }
     }]);
 
@@ -1226,6 +1264,16 @@
       };
     } else {
       return radius;
+    }
+  };
+
+  var SetRadius = function SetRadius(radius, value) {
+    if (typeof value === 'number') {
+      radius.x = value;
+      radius.y = value;
+    } else {
+      radius.x = GetValue$4(value, 'x', 0);
+      radius.y = GetValue$4(value, 'y', 0);
     }
   };
 
@@ -1444,7 +1492,7 @@
         for (var penIdx = 0; penIdx < penCount; penIdx++) {
           var penAlign = pens[penIdx].prop.align;
 
-          if (penAlign) {
+          if (penAlign !== undefined) {
             halign = penAlign;
             break;
           }
@@ -1692,6 +1740,10 @@
   }();
 
   var Clear = function Clear(obj) {
+    if (_typeof(obj) !== 'object' || obj === null) {
+      return obj;
+    }
+
     if (Array.isArray(obj)) {
       obj.length = 0;
     } else {
@@ -1699,6 +1751,8 @@
         delete obj[key];
       }
     }
+
+    return obj;
   };
 
   /**
@@ -1737,10 +1791,11 @@
 
   var GetFastValue = Phaser.Utils.Objects.GetFastValue;
   var NO_NEWLINE$2 = CONST.NO_NEWLINE;
-  var WRAPPED_NEWLINE$1 = CONST.WRAPPED_NEWLINE;
-  var PensPool = new Stack(); // default pens pool
+  var WRAPPED_NEWLINE$1 = CONST.WRAPPED_NEWLINE; // Reuse objects can increase performance
 
-  var LinesPool$1 = new Stack(); // default lines pool
+  var PensPool = new Stack(); // Default pens pool
+
+  var LinesPool$1 = new Stack(); // Default lines pool
 
   var PenManager = /*#__PURE__*/function () {
     function PenManager(config) {
@@ -2097,13 +2152,10 @@
         return this;
       }
     }, {
-      key: "getFirstHitArea",
-      value: function getFirstHitArea(x, y) {
-        var hitAreas = this.hitAreas,
-            hitArea;
-
-        for (var i = 0, cnt = hitAreas.length; i < cnt; i++) {
-          hitArea = hitAreas[i];
+      key: "getFirst",
+      value: function getFirst(x, y) {
+        for (var i = 0, cnt = this.hitAreas.length; i < cnt; i++) {
+          var hitArea = this.hitAreas[i];
 
           if (hitArea.contains(x, y)) {
             return hitArea;
@@ -2123,11 +2175,8 @@
           graphics.save().scaleCanvas(parent.scaleX, parent.scaleY).rotateCanvas(parent.rotation).translateCanvas(parent.x, parent.y);
         }
 
-        var hitAreas = this.hitAreas,
-            hitArea;
-
-        for (var i = 0, cnt = hitAreas.length; i < cnt; i++) {
-          hitArea = hitAreas[i];
+        for (var i = 0, cnt = this.hitAreas.length; i < cnt; i++) {
+          var hitArea = this.hitAreas[i];
           graphics.lineStyle(1, color).strokeRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
         }
 
@@ -2143,21 +2192,61 @@
   }();
 
   var SetInteractive = function SetInteractive() {
-    this.parent.on('pointerdown', function (pointer, localX, localY, event) {
-      FireEvent.call(this, 'areadown', pointer, localX, localY);
-    }, this).on('pointerup', function (pointer, localX, localY, event) {
-      FireEvent.call(this, 'areaup', pointer, localX, localY);
+    this.parent.on('pointerdown', OnAreaDown, this).on('pointerup', OnAreaUp, this).on('pointermove', OnAreaOverOut, this).on('pointerover', OnAreaOverOut, this).on('pointerout', function (pointer, event) {
+      OnAreaOverOut.call(this, pointer, null, null, event);
     }, this);
   };
 
-  var FireEvent = function FireEvent(eventName, pointer, localX, localY) {
-    var area = this.hitAreaManager.getFirstHitArea(localX, localY);
+  var OnAreaDown = function OnAreaDown(pointer, localX, localY, event) {
+    var area = this.hitAreaManager.getFirst(localX, localY);
 
     if (area === null) {
       return;
     }
 
-    var key = area.key;
+    FireEvent.call(this, 'areadown', area.key, pointer, localX, localY);
+  };
+
+  var OnAreaUp = function OnAreaUp(pointer, localX, localY, event) {
+    var area = this.hitAreaManager.getFirst(localX, localY);
+
+    if (area === null) {
+      return;
+    }
+
+    FireEvent.call(this, 'areaup', area.key, pointer, localX, localY);
+  };
+
+  var OnAreaOverOut = function OnAreaOverOut(pointer, localX, localY, event) {
+    if (localX === null) {
+      // Case of pointerout
+      if (this.lastHitAreaKey !== null) {
+        FireEvent.call(this, 'areaout', this.lastHitAreaKey, pointer);
+      }
+
+      this.lastHitAreaKey = null;
+      return;
+    }
+
+    var area = this.hitAreaManager.getFirst(localX, localY);
+    var hitAreaKey = area ? area.key : null;
+
+    if (this.lastHitAreaKey === hitAreaKey) {
+      return;
+    }
+
+    if (this.lastHitAreaKey !== null) {
+      FireEvent.call(this, 'areaout', this.lastHitAreaKey, pointer);
+    }
+
+    if (hitAreaKey !== null) {
+      FireEvent.call(this, 'areaover', hitAreaKey, pointer, localX, localY);
+    }
+
+    this.lastHitAreaKey = hitAreaKey;
+  };
+
+  var FireEvent = function FireEvent(eventName, key, pointer, localX, localY) {
     this.parent.emit("".concat(eventName, "-").concat(key), pointer, localX, localY);
     this.parent.emit(eventName, key, pointer, localX, localY);
   };
@@ -2341,6 +2430,7 @@
       this.penManager = this.newPenManager();
       this._tmpPenManager = null;
       this.hitAreaManager = new HitAreaManager();
+      this.lastHitAreaKey = null;
       var context = this.context;
 
       this.getTextWidth = function (text) {
@@ -2728,7 +2818,7 @@
     function ImageManager(scene) {
       _classCallCheck(this, ImageManager);
 
-      this.textureManager = scene.textures;
+      this.textureManager = scene.sys.textures;
       this.images = {};
     }
 
@@ -2812,7 +2902,7 @@
   Object.assign(ImageManager.prototype, methods$1);
 
   var CopyCanvasToTexture = function CopyCanvasToTexture(scene, srcCanvas, key, x, y, width, height) {
-    var textures = scene.textures;
+    var textures = scene.sys.textures;
     var renderer = scene.renderer;
 
     if (x === undefined) {
@@ -3035,17 +3125,18 @@
       value: function setText(value) {
         if (value == null) {
           value = '';
-        }
-
-        if (Array.isArray(value)) {
+        } else if (Array.isArray(value)) {
           value = value.join('\n');
+        } else {
+          value = value.toString();
         }
 
-        if (value !== this._text) {
-          this._text = value.toString();
-          this.updateText();
+        if (value === this._text) {
+          return this;
         }
 
+        this._text = value;
+        this.updateText();
         return this;
       }
     }, {
@@ -3375,9 +3466,14 @@
       }
     }, {
       key: "setInteractive",
-      value: function setInteractive(shape, callback, dropZone) {
-        GameObject.prototype.setInteractive.call(this, shape, callback, dropZone);
-        this.canvasText.setInteractive();
+      value: function setInteractive(hitArea, hitAreaCallback, dropZone) {
+        var isInteractived = !!this.input;
+        GameObject.prototype.setInteractive.call(this, hitArea, hitAreaCallback, dropZone);
+
+        if (!isInteractived) {
+          this.canvasText.setInteractive();
+        }
+
         return this;
       }
     }, {

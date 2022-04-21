@@ -1,4 +1,6 @@
 // import * as Phaser from 'phaser';
+import Base from './Base';
+
 export default ContainerLite;
 
 declare namespace ContainerLite {
@@ -13,9 +15,14 @@ declare namespace ContainerLite {
         visible: boolean,
         active: boolean,
     }
+
+    interface IAddChildConfig {
+        syncPosition?: boolean
+        syncRotation?: boolean
+    }
 }
 
-declare class ContainerLite extends Phaser.GameObjects.Zone {
+declare class ContainerLite extends Base {
     isRexContainerLite: true;
 
     constructor(
@@ -26,11 +33,12 @@ declare class ContainerLite extends Phaser.GameObjects.Zone {
     );
 
     add(
-        child: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[]
+        gameObject: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[]
     ): this;
 
     pin(
-        gameObject: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[]
+        gameObject: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[],
+        config?: ContainerLite.IAddChildConfig
     ): this;
 
     addMultiple(
@@ -41,17 +49,13 @@ declare class ContainerLite extends Phaser.GameObjects.Zone {
         child: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[]
     ): this;
 
+    pinLocal(
+        child: Phaser.GameObjects.GameObject | Phaser.GameObjects.GameObject[],
+        config?: ContainerLite.IAddChildConfig
+    ): this;
+
     addLocalMultiple(
         children: Phaser.GameObjects.GameObject[]
-    ): this;
-
-    remove(
-        gameObject: Phaser.GameObjects.GameObject,
-        destroyChild?: boolean
-    ): this;
-
-    clear(
-        destroyChild?: boolean
     ): this;
 
     setChildPosition(
@@ -137,6 +141,14 @@ declare class ContainerLite extends Phaser.GameObjects.Zone {
         child: Phaser.GameObjects.GameObject
     ): this;
 
+    setMask(
+        mask: Phaser.Display.Masks.BitmapMask | Phaser.Display.Masks.GeometryMask
+    ): this;
+
+    clearMask(
+        destroyMask?: boolean
+    ): this;
+
     tween(
         config: Phaser.Types.Tweens.TweenBuilderConfig | object
     ): Phaser.Tweens.Tween
@@ -164,10 +176,6 @@ declare class ContainerLite extends Phaser.GameObjects.Zone {
     dfs(
         callback: (child: Phaser.GameObjects.GameObject) => boolean
     ): this;
-
-    contains(
-        gameObject: Phaser.GameObjects.GameObject
-    ): boolean;
 
     getByName(
         name: string,
@@ -231,7 +239,12 @@ declare class ContainerLite extends Phaser.GameObjects.Zone {
     ): this;
 
     getParent(
-        gameObject?: Phaser.GameObjects.GameObject
+        name?: string
+    ): ContainerLite;
+
+    getParent(
+        gameObject?: Phaser.GameObjects.GameObject,
+        name?: string
     ): ContainerLite;
 
     getTopmostParent(
@@ -254,23 +267,4 @@ declare class ContainerLite extends Phaser.GameObjects.Zone {
         originX: number,
         originY: number
     ): this;
-
-
-    // Components
-    clearAlpha(): this;
-    setAlpha(topLeft?: number, topRight?: number, bottomLeft?: number, bottomRight?: number): this;
-    alpha: number;
-    alphaTopLeft: number;
-    alphaTopRight: number;
-    alphaBottomLeft: number;
-    alphaBottomRight: number;
-
-
-    toggleFlipX(): this;
-    toggleFlipY(): this;
-    setFlipX(value: boolean): this;
-    setFlipY(value: boolean): this;
-    setFlip(x: boolean, y: boolean): this;
-    resetFlip(): this;
-
 }

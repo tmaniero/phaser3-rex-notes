@@ -5,6 +5,9 @@ Draw outlines and quantize color in HSV domain, post processing filter. [Referen
 - Author: Rex
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Live demos
 
 - [Toonify](https://codepen.io/rexrainbow/pen/ErWNXa)

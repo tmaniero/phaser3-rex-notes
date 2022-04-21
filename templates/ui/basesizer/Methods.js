@@ -31,6 +31,7 @@ import ScaleMethods from './ScaleMethods.js';
 import FadeMethods from './FadeMethods.js';
 import EaseMoveMethods from './EaseMoveMethods.js';
 import ShakeMethods from './ShakeMethods.js';
+import EaseDataMethods from './EaseDataMethods.js';
 import HideMethods from './HideMethods.js';
 import IsInTouching from './IsInTouching.js';
 import PointToChild from './PointToChild.js';
@@ -38,6 +39,7 @@ import GetParentSizerMethods from './GetParentSizerMethods.js';
 import LayoutBackgrounds from './LayoutBackgrounds.js';
 import SetDraggable from './SetDraggable.js';
 import ClickMethods from './ClickMethods.js';
+import TouchingMethods from './TouchingMethods.js';
 import SetChildrenInteractive from './SetChildrenInteractive.js';
 import BroadcastEvent from './BroadcastEvent.js';
 
@@ -88,7 +90,9 @@ Object.assign(
     FadeMethods,
     EaseMoveMethods,
     ShakeMethods,
+    EaseDataMethods,
     ClickMethods,
+    TouchingMethods,
     HideMethods,
     GetShownChildrenMethods,
 );

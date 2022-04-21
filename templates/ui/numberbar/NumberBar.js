@@ -37,7 +37,13 @@ class NumberBar extends Sizer {
                 }
             }
 
-            this.add(icon, 0, 'center', padding);
+            this.add(icon,
+                {
+                    proportion: 0,
+                    align: 'center',
+                    padding: padding
+                }
+            )
 
             if (iconMask) {
                 iconMask = AddChildMask.call(this, icon, icon, 1); // Circle mask
@@ -53,6 +59,7 @@ class NumberBar extends Sizer {
                 sliderConfig.input = -1;
             }
             slider = new Slider(scene, sliderConfig);
+            scene.add.existing(slider);
 
             var padding;
             if (this.orientation === 0) {
@@ -73,7 +80,14 @@ class NumberBar extends Sizer {
                 var sliderHeight = GetValue(sliderConfig, 'height', undefined);
                 proportion = (sliderHeight === undefined) ? 1 : 0;
             }
-            this.add(slider, proportion, 'center', padding);
+
+            this.add(slider,
+                {
+                    proportion: proportion,
+                    align: 'center',
+                    padding: padding
+                }
+            )
         }
 
 

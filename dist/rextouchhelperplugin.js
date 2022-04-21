@@ -4,6 +4,22 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.rextouchhelperplugin = factory());
 }(this, (function () { 'use strict';
 
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      _typeof = function (obj) {
+        return typeof obj;
+      };
+    } else {
+      _typeof = function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
@@ -282,6 +298,186 @@
     return false;
   };
 
+  var GetDisplayWidth = function GetDisplayWidth(gameObject) {
+    if (gameObject.displayWidth !== undefined) {
+      return gameObject.displayWidth;
+    } else {
+      return gameObject.width;
+    }
+  };
+
+  var GetDisplayHeight = function GetDisplayHeight(gameObject) {
+    if (gameObject.displayHeight !== undefined) {
+      return gameObject.displayHeight;
+    } else {
+      return gameObject.height;
+    }
+  };
+
+  var Rectangle = Phaser.Geom.Rectangle;
+  var Vector2 = Phaser.Geom.Vector2;
+  var RotateAround = Phaser.Math.RotateAround;
+
+  var GetBounds = function GetBounds(gameObject, output) {
+    if (output === undefined) {
+      output = new Rectangle();
+    } else if (output === true) {
+      if (GlobRect === undefined) {
+        GlobRect = new Rectangle();
+      }
+
+      output = GlobRect;
+    }
+
+    if (gameObject.getBounds) {
+      return gameObject.getBounds(output);
+    } //  We can use the output object to temporarily store the x/y coords in:
+
+
+    var TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy; // Instead of doing a check if parent container is
+    // defined per corner we only do it once.
+
+    if (gameObject.parentContainer) {
+      var parentMatrix = gameObject.parentContainer.getBoundsTransformMatrix();
+      GetTopLeft(gameObject, output);
+      parentMatrix.transformPoint(output.x, output.y, output);
+      TLx = output.x;
+      TLy = output.y;
+      GetTopRight(gameObject, output);
+      parentMatrix.transformPoint(output.x, output.y, output);
+      TRx = output.x;
+      TRy = output.y;
+      GetBottomLeft(gameObject, output);
+      parentMatrix.transformPoint(output.x, output.y, output);
+      BLx = output.x;
+      BLy = output.y;
+      GetBottomRight(gameObject, output);
+      parentMatrix.transformPoint(output.x, output.y, output);
+      BRx = output.x;
+      BRy = output.y;
+    } else {
+      GetTopLeft(gameObject, output);
+      TLx = output.x;
+      TLy = output.y;
+      GetTopRight(gameObject, output);
+      TRx = output.x;
+      TRy = output.y;
+      GetBottomLeft(gameObject, output);
+      BLx = output.x;
+      BLy = output.y;
+      GetBottomRight(gameObject, output);
+      BRx = output.x;
+      BRy = output.y;
+    }
+
+    output.x = Math.min(TLx, TRx, BLx, BRx);
+    output.y = Math.min(TLy, TRy, BLy, BRy);
+    output.width = Math.max(TLx, TRx, BLx, BRx) - output.x;
+    output.height = Math.max(TLy, TRy, BLy, BRy) - output.y;
+    return output;
+  };
+
+  var GlobRect = undefined;
+
+  var GetTopLeft = function GetTopLeft(gameObject, output, includeParent) {
+    if (output === undefined) {
+      output = new Vector2();
+    } else if (output === true) {
+      if (GlobVector === undefined) {
+        GlobVector = new Vector2();
+      }
+
+      output = GlobVector;
+    }
+
+    if (gameObject.getTopLeft) {
+      return gameObject.getTopLeft(output);
+    }
+
+    output.x = gameObject.x - GetDisplayWidth(gameObject) * gameObject.originX;
+    output.y = gameObject.y - GetDisplayHeight(gameObject) * gameObject.originY;
+    return PrepareBoundsOutput(gameObject, output, includeParent);
+  };
+
+  var GetTopRight = function GetTopRight(gameObject, output, includeParent) {
+    if (output === undefined) {
+      output = new Vector2();
+    } else if (output === true) {
+      if (GlobVector === undefined) {
+        GlobVector = new Vector2();
+      }
+
+      output = GlobVector;
+    }
+
+    if (gameObject.getTopRight) {
+      return gameObject.getTopRight(output);
+    }
+
+    output.x = gameObject.x - GetDisplayWidth(gameObject) * gameObject.originX + GetDisplayWidth(gameObject);
+    output.y = gameObject.y - GetDisplayHeight(gameObject) * gameObject.originY;
+    return PrepareBoundsOutput(gameObject, output, includeParent);
+  };
+
+  var GetBottomLeft = function GetBottomLeft(gameObject, output, includeParent) {
+    if (output === undefined) {
+      output = new Vector2();
+    } else if (output === true) {
+      if (GlobVector === undefined) {
+        GlobVector = new Vector2();
+      }
+
+      output = GlobVector;
+    }
+
+    if (gameObject.getBottomLeft) {
+      return gameObject.getBottomLeft(output);
+    }
+
+    output.x = gameObject.x - GetDisplayWidth(gameObject) * gameObject.originX;
+    output.y = gameObject.y - GetDisplayHeight(gameObject) * gameObject.originY + GetDisplayHeight(gameObject);
+    return PrepareBoundsOutput(gameObject, output, includeParent);
+  };
+
+  var GetBottomRight = function GetBottomRight(gameObject, output, includeParent) {
+    if (output === undefined) {
+      output = new Vector2();
+    } else if (output === true) {
+      if (GlobVector === undefined) {
+        GlobVector = new Vector2();
+      }
+
+      output = GlobVector;
+    }
+
+    if (gameObject.getBottomRight) {
+      return gameObject.getBottomRight(output);
+    }
+
+    output.x = gameObject.x - GetDisplayWidth(gameObject) * gameObject.originX + GetDisplayWidth(gameObject);
+    output.y = gameObject.y - GetDisplayHeight(gameObject) * gameObject.originY + GetDisplayHeight(gameObject);
+    return PrepareBoundsOutput(gameObject, output, includeParent);
+  };
+
+  var GlobVector = undefined;
+
+  var PrepareBoundsOutput = function PrepareBoundsOutput(gameObject, output, includeParent) {
+    if (includeParent === undefined) {
+      includeParent = false;
+    }
+
+    if (gameObject.rotation !== 0) {
+      RotateAround(output, gameObject.x, gameObject.y, gameObject.rotation);
+    }
+
+    if (includeParent && gameObject.parentContainer) {
+      var parentMatrix = gameObject.parentContainer.getBoundsTransformMatrix();
+      parentMatrix.transformPoint(output.x, output.y, output);
+    }
+
+    return output;
+  };
+
   var IsPointInBounds = function IsPointInBounds(gameObject, x, y, preTest, postTest) {
     // Can't get bounds
     if (!gameObject || !gameObject.getBounds) {
@@ -292,9 +488,9 @@
       return false;
     }
 
-    globRect = gameObject.getBounds(globRect);
+    var boundsRect = GetBounds(gameObject, true);
 
-    if (!globRect.contains(x, y)) {
+    if (!boundsRect.contains(x, y)) {
       return false;
     }
 
@@ -304,8 +500,6 @@
 
     return true;
   };
-
-  var globRect = undefined;
 
   var IsPointerInBounds = function IsPointerInBounds(gameObject, pointer, preTest, postTest) {
     if (pointer) {
@@ -327,6 +521,87 @@
     }
   };
 
+  var SceneClass = Phaser.Scene;
+
+  var IsSceneObject = function IsSceneObject(object) {
+    return object instanceof SceneClass;
+  };
+
+  var Clear = function Clear(obj) {
+    if (_typeof(obj) !== 'object' || obj === null) {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      obj.length = 0;
+    } else {
+      for (var key in obj) {
+        delete obj[key];
+      }
+    }
+
+    return obj;
+  };
+
+  var TouchGroup = /*#__PURE__*/function () {
+    function TouchGroup(game) {
+      _classCallCheck(this, TouchGroup);
+
+      if (IsSceneObject(game)) {
+        game = game.game;
+      }
+
+      this.ticker = game.loop;
+      this.topObjects = {};
+    }
+
+    _createClass(TouchGroup, [{
+      key: "destroy",
+      value: function destroy() {
+        this.ticker = undefined;
+        this.topObjects = undefined;
+      }
+    }, {
+      key: "isAtTop",
+      value: function isAtTop(groupName, key) {
+        var result;
+        var tick = this.ticker.frame;
+        var item = this.topObjects[groupName];
+
+        if (item) {
+          if (item.tick < tick) {
+            result = true;
+          } else if (item.tick === tick) {
+            result = key !== undefined && item.key === key;
+          } else {
+            result = false;
+          }
+
+          if (result) {
+            item.tick = tick;
+            item.key = key;
+          }
+        } else {
+          this.topObjects[groupName] = {
+            tick: tick,
+            key: key
+          };
+          result = true;
+        }
+
+        return result;
+      }
+    }, {
+      key: "clear",
+      value: function clear() {
+        Clear(this.topObjects);
+        return this;
+      }
+    }]);
+
+    return TouchGroup;
+  }();
+
   var TouchHelperPlugin = /*#__PURE__*/function (_Phaser$Plugins$BaseP) {
     _inherits(TouchHelperPlugin, _Phaser$Plugins$BaseP);
 
@@ -343,11 +618,19 @@
       value: function start() {
         var eventEmitter = this.game.events;
         eventEmitter.on('destroy', this.destroy, this);
+        this.touchGroup = new TouchGroup(this.game);
       }
     }, {
       key: "destroy",
       value: function destroy() {
+        this.touchGroup.destroy();
+
         _get(_getPrototypeOf(TouchHelperPlugin.prototype), "destroy", this).call(this);
+      }
+    }, {
+      key: "isAtTop",
+      value: function isAtTop(groupName, key) {
+        return this.touchGroup.isAtTop(groupName, key);
       }
     }]);
 

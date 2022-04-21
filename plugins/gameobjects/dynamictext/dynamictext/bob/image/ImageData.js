@@ -1,7 +1,7 @@
-import Base from '../Base.js';
+import RenderBase from '../renderbase/RenderBase.js';
 import { ImageTypeName } from '../Types.js';
 
-class ImageData extends Base {
+class ImageData extends RenderBase {
     constructor(
         parent,
         key, frame
@@ -46,7 +46,7 @@ class ImageData extends Base {
         this.key = key;
         this.frame = frame;
 
-        this.frameObj = this.scene.textures.getFrame(key, frame);
+        this.frameObj = this.scene.sys.textures.getFrame(key, frame);
         return this;
     }
 
@@ -84,10 +84,12 @@ class ImageData extends Base {
         var context = this.context;
         var frame = this.frameObj;
 
+        var width = this.frameWidth,
+            height = this.frameHeight;
         context.drawImage(
             frame.source.image,              // image
-            frame.cutX, frame.cutY,          // sx, sy
-            frame.cutWidth, frame.cutHeight, // sWidth, sHeight
+            frame.cutX, frame.cutY, width, height,
+            0, 0, width, height,
         );
     }
 

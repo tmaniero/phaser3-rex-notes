@@ -39,6 +39,7 @@ nav:
                 - Bitmap zone: bitmapzone.md
             - Tile sprite: tilesprite.md
             - Nine patch: ninepatch.md
+            - Nine patch2: ninepatch2.md
             - Line: line.md
         - Shader: shader.md        
     - Mesh:
@@ -135,6 +136,7 @@ nav:
         - Scale down destroy: scaledowndestroy.md
         - Flip: flip.md
         - Ease-move: easemove.md
+        - Ease-data: easedata.md
         - Path follower: pathfollower.md
         - Anchor: anchor.md
         - Interception: interception.md
@@ -161,6 +163,7 @@ nav:
         - Textures: textures.md
         - Canvas texture: canvas-texture.md 
         - Canvas frame manager: canvasframemanager.md
+        - Character cache: charactercache.md
     - Display:
         - Mask: mask.md
 - Input:
@@ -186,6 +189,7 @@ nav:
         - Cursor at bound: cursoratbound.md
         - Drag rotate: dragrotate.md
         - Touch event stop: toucheventstop.md
+        - In touching: intouching.md
     - Keyboard:
         - Keyboard events: keyboardevents.md
         - Combo events: keyboardcombo.md
@@ -249,7 +253,9 @@ nav:
             - Recoder: arcade-tcrp-recorder.md
             - Step runner: arcade-tcrp-step-runner.md
             - Player: arcade-tcrp-player.md          
-    - FSM: fsm.md
+    - State machine:
+        - FSM: fsm.md
+        - State manager: statemanager.md
     - Conditions table:
         - CSV Conditions table: conditionstable.md
         - YAML Conditions table: ymlconditionstable.md
@@ -358,14 +364,16 @@ nav:
         - Text area: ui-textarea.md
     - Slider:
         - Slider: ui-slider.md
+        - Scroll bar: ui-scrollbar.md
         - Number bar: ui-numberbar.md
         - Knob: ui-knob.md
     - Dialog: ui-dialog.md
-    - Menu: ui-menu.md    
+    - Menu: ui-menu.md
     - Text box: ui-textbox.md   
     - Toast: ui-toast.md    
     - Tabs: ui-tabs.md    
     - Pages: ui-pages.md
+    - Holy grail: ui-holygrail.md
     - Chart: ui-chart.md    
 - Board:
     - Overview: board-overview.md

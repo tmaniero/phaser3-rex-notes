@@ -5,6 +5,9 @@ Inverse color post processing filter.
 - Author: Rex
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Usage
 
 [Sample code](https://github.com/rexrainbow/phaser3-rex-notes/tree/master/examples/shader-inverse)

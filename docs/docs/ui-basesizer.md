@@ -479,17 +479,58 @@ sizer.pushIntoBounds(bounds);
 
 ### Shake
 
-```javascript
-sizer.shake(duration);
-// sizer.shake(duration, magnitude);
-```
-or
-```javascript
-sizer.shakePromise(duration, magnitude)
-    .then(function(){
-        // ...
-    })
-```
+- Start
+    ```javascript
+    sizer.shake(duration);
+    // sizer.shake(duration, magnitude);
+    ```
+    or
+    ```javascript
+    sizer.shakePromise(duration, magnitude)
+        .then(function(){
+            // ...
+        })
+    ```
+- Events
+    - Shake complete
+        ```javascript
+        sizer.on('shake.complete', function(sizer) { });
+        ```
+
+### Ease data
+
+- Start
+    ```javascript
+    sizer.easeDataTo(key, value, duration);
+    // sizer.easeDataTo(key, value, duration, ease);
+    // sizer.easeDataTo({ key, value, duration, ease });
+    // sizer.easeDataTo({ key, value, speed, ease });
+    ```
+    or
+    ```javascript
+    sizer.easeDataToPromise(key, value, duration, ease)
+        .then(function(){
+            // ...
+        })
+    ```
+- Stop
+    ```javascript
+    sizer.stopEaseData(key);           // Set to end value
+    // sizer.stopEaseData(key, false); // Stop at current value
+    ```
+    or
+    ```javascript
+    sizer.stopAllEaseData();           // Set to end value
+    // sizer.stopAllEaseData(false);   // Stop at current value
+    ```
+- Events
+    - Easing complete
+        ```javascript
+        sizer.on('easedata.' + key + '.complete', function(sizer) { });
+        ```
+        ```javascript
+        sizer.on('easedata.complete', function(key, sizer) { });
+        ```
 
 ### Drag top-most sizer
 
@@ -873,6 +914,10 @@ For example, anchor game object's left bound to viewport's left+10, and centerY 
     ```javascript
     var parentSizer = sizer.getParentSizer();
     ```
+- Get ancestor sizer matched given name
+    ```javascript
+    var parentSizer = sizer.getParentSizer(name);
+    ```
 - Get topmost sizer
     ```javascript
     var topmostSizer = sizer.getTopmostSizer();
@@ -890,13 +935,21 @@ var isTouching = sizer.isInTouching();
 - Set property of child, then [reset local state of child](containerlite.md#reset-local-state-of-child)
 - [Tween local state of child](containerlite.md#tween-local-state)
 
-### Add to layer
+### Add to container
 
-```javascript
-sizer.addToLayer(layer);
-```
+- Add to [built-in container](container.md)
+    ```javascript
+    sizer.addToContainer(p3Container);
+    ```
+    - `container` : [Container](container.md) game object.
+- Add to [Layer](layer.md)
+    ```javascript
+    container.addToLayer(layer);
+    ```
+    - `layer` : [Layer](layer.md) game object.
 
-- `layer` : [Layer](layer.md) game object.
+!!! note
+    `container.add(sizer)`, or `layer.add(sizer)` won't add children of sizer.
 
 ### Events
 

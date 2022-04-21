@@ -5,6 +5,9 @@ Cross-stitching post processing filter. [Reference](https://www.geeks3d.com/2011
 - Author: Rex
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Live demos
 
 - [Cross-stitching](https://codepen.io/rexrainbow/pen/XWMEdYz)

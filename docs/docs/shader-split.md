@@ -5,6 +5,9 @@ Split image into 4 parts.
 - Author: Rex
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Live demos
 
 - [Split](https://codepen.io/rexrainbow/pen/oNZreWK)

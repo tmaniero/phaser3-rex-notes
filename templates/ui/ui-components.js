@@ -1,4 +1,5 @@
 import NinePatch from './ninepatch/NinePatch.js';
+import NinePatch2 from './ninepatch2/NinePatch.js';
 import RoundRectangle from './roundrectangle/RoundRectangle.js';
 import RoundRectangleCanvas from './roundrectanglecanvas/RoundRectangleCanvas.js';
 import BBCodeText from './bbcodetext/BBCodeText.js';
@@ -31,6 +32,7 @@ import Buttons from './buttons/Buttons.js';
 import GridButtons from './gridbuttons/GridButtons.js';
 import FixWidthButtons from './fixwidthbuttons/FixWidthButtons.js';
 import Dialog from './dialog/Dialog.js';
+import HolyGrail from './holygrail/HolyGrail.js';
 import Tabs from './tabs/Tabs.js';
 import Slider from './slider/Slider.js';
 import GridTable from './gridtable/GridTable.js';
@@ -41,6 +43,7 @@ import BadgeLabel from './badgelabel/BadgeLabel.js';
 import Pages from './pages/Pages.js';
 import TextArea from './textarea/TextArea.js';
 import ScrollablePanel from './scrollablepanel/ScrollablePanel.js';
+import ScrollBar from './scrollbar/ScrollBar.js';
 import Toast from './toast/Toast.js';
 import Sides from './sides/Sides.js';
 
@@ -79,6 +82,7 @@ import RequestDrag from '../../plugins/utils/input/RequestDrag.js';
 
 export {
     NinePatch,
+    NinePatch2,
     RoundRectangle,
     RoundRectangleCanvas,
     BBCodeText,
@@ -111,6 +115,7 @@ export {
     GridButtons,
     FixWidthButtons,
     Dialog,
+    HolyGrail,
     Tabs,
     Slider,
     GridTable,
@@ -121,6 +126,7 @@ export {
     Pages,
     TextArea,
     ScrollablePanel,
+    ScrollBar,
     Toast,
     Sides,
 

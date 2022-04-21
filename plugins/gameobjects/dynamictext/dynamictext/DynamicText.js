@@ -28,7 +28,11 @@ class DynamicText extends Canvas {
         this.type = 'rexDynamicText';
         this.autoRound = true;
         this.padding = {};
-        this.textStyle = new TextStyle(GetValue(config, 'style', undefined));
+
+        var textStyleConfig = GetValue(config, 'style', undefined);
+        this.defaultTextStyle = new TextStyle(textStyleConfig);
+        this.textStyle = this.defaultTextStyle.clone();
+
         this.background = new Background(this, GetValue(config, 'background', undefined));
         this.innerBounds = new InnerBounds(this, GetValue(config, 'innerBounds', undefined));
         this.children = [];
@@ -45,30 +49,7 @@ class DynamicText extends Canvas {
         }
     }
 
-    setFixedSize(width, height) {
-        if (width === undefined) {
-            width = 0;
-        }
-        if (height === undefined) {
-            height = 0;
-        }
-
-        if ((width > 0) && (height > 0)) {
-            if ((this.fixedWidth !== width) || (this.fixedHeight !== height)) {
-                this.dirty = true;
-            }
-        } else {
-            this.dirty = true;
-        }
-
-        this.fixedWidth = width;
-        this.fixedHeight = height;
-
-        return this;
-    }
-
     updateTexture() {
-        this.clear();
         this.drawContent();
         super.updateTexture();
         return this;

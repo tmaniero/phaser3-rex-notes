@@ -90,6 +90,7 @@ See this [example](https://github.com/rexrainbow/phaser3-rex-notes/blob/master/e
 1. [Grid-buttons](ui-gridbuttons.md): A container with a group of buttons in grids.
 1. [Grid-sizer](ui-gridsizer.md): Layout children game objects in grids.
 1. [Grid-table](ui-gridtable.md): A container with a [grid table](gridtable.md), slider, and scroller.
+1. [Holy grail](ui-holygrail.md): Layout elements in [Holy grail](https://en.wikipedia.org/wiki/Holy_grail_(web_design)) style.
 1. [Knob](ui-knob.md): A knob button based on circular progress.
 1. [Label](ui-label.md): A container with an icon, text, and background.
 1. [Menu](ui-menu.md): A container with buttons and sub-menu.
@@ -150,6 +151,9 @@ See this [example](https://github.com/rexrainbow/phaser3-rex-notes/blob/master/e
     ```javascript
     var ninePatch = scene.rexUI.add.ninePatch(x, y, width, height, key, columns, rows, config);
     ```
+    ```javascript
+    var ninePatch = scene.rexUI.add.ninePatch2(x, y, width, height, key, columns, rows, config);
+    ```
     or
     ```javascript
     class MyNinePatch extends RexPlugins.UI.NinePatch {
@@ -161,7 +165,17 @@ See this [example](https://github.com/rexrainbow/phaser3-rex-notes/blob/master/e
         // ...
     }
     ```
-1. [Custom shapes](shape-custom-shapes.md): Custom shapes on shape.
+    ```javascript
+    class MyNinePatch extends RexPlugins.UI.NinePatch2 {
+        constructor(scene, x, y, width, height, key, columns, rows, config) {
+            super(scene, x, y, width, height, key, columns, rows, config);
+            // ...
+            scene.add.existing(this);
+        }
+        // ...
+    }
+    ```
+2. [Custom shapes](shape-custom-shapes.md): Custom shapes on shape.
     ```javascript
     var customShapes = scene.rexUI.add.customShapes(x, y, width, height, config);
     ```
@@ -176,7 +190,7 @@ See this [example](https://github.com/rexrainbow/phaser3-rex-notes/blob/master/e
         // ...
     }
     ```
-1. [Custom progress](shape-custom-progress.md): Custom progress on shape.
+3. [Custom progress](shape-custom-progress.md): Custom progress on shape.
     ```javascript
     var customProgress = scene.rexUI.add.customProgress(x, y, width, height, config);
     ```
@@ -191,7 +205,7 @@ See this [example](https://github.com/rexrainbow/phaser3-rex-notes/blob/master/e
         // ...
     }    
     ```
-1. [Canvas-round-rectangle](canvas-roundrectangle.md): Round rectangle on canvas.
+4. [Canvas-round-rectangle](canvas-roundrectangle.md): Round rectangle on canvas.
     ```javascript
     var shape = scene.rexUI.add.roundRectangleCanvas(x, y, width, height, radiusConfig, fillStyle, strokeStyle, lineWidth, fillColor2, isHorizontalGradient);
     ```
@@ -206,7 +220,7 @@ See this [example](https://github.com/rexrainbow/phaser3-rex-notes/blob/master/e
         // ...
     }
     ```
-1. [Cover](shape-cover.md): [Rectangle shape covered full window](shape-cover.md), and [block all touch events](toucheventstop.md).
+5. [Cover](shape-cover.md): [Rectangle shape covered full window](shape-cover.md), and [block all touch events](toucheventstop.md).
     ```javascript
     var shape = scene.rexUI.add.cover(config);
     ```
@@ -514,6 +528,12 @@ See this [example](https://github.com/rexrainbow/phaser3-rex-notes/blob/master/e
     var parentSizer = scene.rexUI.getParentSizer(gameObject);
     ```
     - `gameObject` : Any game object added to sizer.
+- Get ancestor sizer matched given name
+    ```javascript
+    var parentSizer = scene.rexUI.getParentSizer(gameObject, name);
+    ```
+    - `gameObject` : Any game object added to sizer.
+    - `name` : Name string.
 - Get topmost sizer
     ```javascript
     var topmostSizer = scene.rexUI.getTopmostSizer(gameObject);

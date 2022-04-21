@@ -281,7 +281,7 @@
 
       if (this.parent && this.parent === this.scene) {
         // parent is a scene
-        this.scene.events.once('shutdown', this.onSceneDestroy, this);
+        this.scene.sys.events.once('shutdown', this.onSceneDestroy, this);
       } else if (this.parent && this.parent.once) {
         // bob object does not have event emitter
         this.parent.once('destroy', this.onParentDestroy, this);
@@ -299,7 +299,7 @@
 
         if (this.parent && this.parent === this.scene) {
           // parent is a scene
-          this.scene.events.off('shutdown', this.onSceneDestroy, this);
+          this.scene.sys.events.off('shutdown', this.onSceneDestroy, this);
         } else if (this.parent && this.parent.once) {
           // bob object does not have event emitter
           this.parent.off('destroy', this.onParentDestroy, this);
@@ -572,7 +572,7 @@
       value: function startTicking() {
         _get(_getPrototypeOf(Clock.prototype), "startTicking", this).call(this);
 
-        this.scene.events.on('update', this.update, this);
+        this.scene.sys.events.on('update', this.update, this);
       }
     }, {
       key: "stopTicking",
@@ -581,7 +581,7 @@
 
         if (this.scene) {
           // Scene might be destoryed
-          this.scene.events.off('update', this.update, this);
+          this.scene.sys.events.off('update', this.update, this);
         }
       }
     }, {
@@ -600,6 +600,10 @@
   }(BaseClock);
 
   var Clear = function Clear(obj) {
+    if (_typeof(obj) !== 'object' || obj === null) {
+      return obj;
+    }
+
     if (Array.isArray(obj)) {
       obj.length = 0;
     } else {
@@ -607,6 +611,8 @@
         delete obj[key];
       }
     }
+
+    return obj;
   };
 
   /**

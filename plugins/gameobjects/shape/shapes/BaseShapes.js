@@ -76,6 +76,22 @@ class BaseShapes extends Shape {
         return this;
     }
 
+    get fillColor() {
+        return this._fillColor;
+    }
+
+    set fillColor(value) {
+        this.setFillStyle(value, this._fillAlpha);
+    }
+
+    get fillAlpha() {
+        return this._fillAlpha;
+    }
+
+    set fillAlpha(value) {
+        this.setFillStyle(this._fillColor, value);
+    }
+
     setFillStyle(color, alpha) {
         if (alpha === undefined) {
             alpha = 1;
@@ -85,23 +101,50 @@ class BaseShapes extends Shape {
             (this.fillColor !== color) ||
             (this.fillAlpha !== alpha);
 
-        this.fillColor = color;
-        this.fillAlpha = alpha;
+        this._fillColor = color;
+        this._fillAlpha = alpha;
+
         return this;
+    }
+
+    get lineWidth() {
+        return this._lineWidth;
+    }
+
+    set lineWidth(value) {
+        this.setStrokeStyle(value, this._strokeColor, this._strokeAlpha);
+    }
+
+    get strokeColor() {
+        return this._strokeColor;
+    }
+
+    set strokeColor(value) {
+        this.setStrokeStyle(this._lineWidth, value, this._strokeAlpha);
+    }
+
+    get strokeAlpha() {
+        return this._strokeAlpha;
+    }
+
+    set strokeAlpha(value) {
+        this.setStrokeStyle(this._lineWidth, this._strokeColor, value);
     }
 
     setStrokeStyle(lineWidth, color, alpha) {
         if (alpha === undefined) {
             alpha = 1;
         }
+
         this.dirty = this.dirty ||
             (this.lineWidth !== lineWidth) ||
             (this.strokeColor !== color) ||
             (this.strokeAlpha !== alpha);
 
-        this.lineWidth = lineWidth;
-        this.strokeColor = color;
-        this.strokeAlpha = alpha;
+        this._lineWidth = lineWidth;
+        this._strokeColor = color;
+        this._strokeAlpha = alpha;
+
         return this;
     }
 
@@ -123,8 +166,9 @@ class BaseShapes extends Shape {
             }
         }
 
-        this.dirty = false;
         this.isSizeChanged = false;
+        this.dirty = false;
+
 
         return this;
     }

@@ -5,6 +5,9 @@ Barrel post processing filter. [Reference](http://www.geeks3d.com/20140213/glsl-
 - Author: Rex
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Live demos
 
 - [Barrel](https://codepen.io/rexrainbow/pen/OJmGGVB)

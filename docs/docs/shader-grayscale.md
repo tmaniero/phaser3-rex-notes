@@ -5,6 +5,9 @@ Gray scale post processing filter.
 - Author: Rex
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Live demos
 
 - [Gray scale](https://codepen.io/rexrainbow/pen/MZNaNP)

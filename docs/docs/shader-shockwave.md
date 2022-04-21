@@ -5,6 +5,9 @@ Shockwave post processing filter. [Reference](https://www.geeks3d.com/20091116/s
 - Author: Rex
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Live demos
 
 - [Shockwave](https://codepen.io/rexrainbow/pen/PopeyLv)

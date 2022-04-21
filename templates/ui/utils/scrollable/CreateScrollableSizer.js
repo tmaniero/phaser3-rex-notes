@@ -1,8 +1,8 @@
 import Sizer from '../../sizer/Sizer.js';
 import GetScrollMode from '../GetScrollMode.js';
-import Slider from '../../slider/Slider.js';
+import Slider from './Slider.js';
 import Scroller from '../../../../plugins/scroller.js';
-import MouseWheelScroller from '../../../../plugins/input/mousewheeldcroller/MouseWheelScroller.js';
+import MouseWheelScroller from '../../../../plugins/input/mousewheelscroller/MouseWheelScroller.js';
 
 const GetValue = Phaser.Utils.Objects.GetValue;
 
@@ -14,8 +14,8 @@ var CreateScrollableSizer = function (parent, config) {
 
     var child = GetValue(config, 'child.gameObject', undefined);
     var sliderConfig = GetValue(config, 'slider', undefined),
-        slider,
-        sliderPosition = GetValue(sliderConfig, 'position', 0);
+        slider;
+    var sliderPosition = GetValue(sliderConfig, 'position', 0);
     if (typeof (sliderPosition) === 'string') {
         sliderPosition = SLIDER_POSITION_MAP[sliderPosition];
     }
@@ -65,6 +65,12 @@ var CreateScrollableSizer = function (parent, config) {
             // Horizontal slider(orientation=0) for top-bottom scrollableSizer(orientation=1)
             sliderConfig.orientation = (scrollableSizer.orientation === 0) ? 1 : 0;
             slider = new Slider(scene, sliderConfig);
+
+            parent.adaptThumbSizeMode = GetValue(sliderConfig, 'adaptThumbSize', false);
+            parent.minThumbSize = GetValue(sliderConfig, 'minThumbSize', undefined);
+        } else {
+            parent.adaptThumbSizeMode = false;
+            parent.minThumbSize = undefined;
         }
 
         if (scrollerConfig) {
@@ -117,21 +123,24 @@ var CreateScrollableSizer = function (parent, config) {
 
     // Control
     if (slider) {
-        slider.on('valuechange', function (newValue) {
-            parent.t = newValue;
-            parent.emit('scroll', parent);
-        });
+        slider
+            .on('valuechange', function (newValue) {
+                parent.t = newValue;
+                parent.emit('scroll', parent);
+            });
     }
     if (scroller) {
-        scroller.on('valuechange', function (newValue) {
-            parent.childOY = newValue;
-            parent.emit('scroll', parent);
-        });
+        scroller
+            .on('valuechange', function (newValue) {
+                parent.childOY = newValue;
+                parent.emit('scroll', parent);
+            })
     }
     if (mouseWheelScroller) {
-        mouseWheelScroller.on('scroll', function (incValue) {
-            parent.addChildOY(-incValue, true);
-        });
+        mouseWheelScroller
+            .on('scroll', function (incValue) {
+                parent.addChildOY(-incValue, true);
+            });
     }
 
     parent.addChildrenMap('child', child);

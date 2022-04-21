@@ -5,6 +5,9 @@ Outline post processing filter. [Reference](https://github.com/pixijs/pixi-filte
 - Author: Rex
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Live demos
 
 - [Outline](https://codepen.io/rexrainbow/pen/dyGNrqa)

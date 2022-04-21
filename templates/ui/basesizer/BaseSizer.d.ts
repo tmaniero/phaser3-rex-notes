@@ -1,6 +1,9 @@
 // import * as Phaser from 'phaser';
 import ContainerLite from '../../../plugins/containerlite.js';
+import Anchor from '../anchor/Anchor';
 import Click from '../click/Click';
+import InTouching from '../intouching/InTouching';
+import SetChildrenInteractive from '../utils/setchildreninteractive/SetChildrenInteractive';
 
 export default BaseSizer;
 
@@ -23,10 +26,7 @@ declare namespace BaseSizer {
             left?: number, right?: number, top?: number, bottom?: number,
         },
 
-        anchor?: {
-            left?: string, right?: string, centerX?: string, x?: string,
-            top?: string, bottom?: string, centerY?: string, y?: string
-        },
+        anchor?: Anchor.IConfig,
 
         name?: string
 
@@ -151,7 +151,12 @@ declare class BaseSizer extends ContainerLite {
         null;
 
     getParentSizer(
-        gameObject?: Phaser.GameObjects.GameObject
+        name?: string
+    ): BaseSizer | null;
+
+    getParentSizer(
+        gameObject?: Phaser.GameObjects.GameObject,
+        name?: string
     ): BaseSizer | null;
 
     getTopmostSizer(
@@ -374,6 +379,49 @@ declare class BaseSizer extends ContainerLite {
         magnitudeMode?: 0 | 1 | 'constant' | 'decay'
     ): Promise<any>;
 
+    easeDataTo(
+        key: string,
+        value: number,
+        duration?: number,
+        ease?: string
+    ): this;
+
+    easeDataTo(
+        config: {
+            key: string,
+            value: number,
+            duration?: number,
+            ease?: string,
+            speed?: number
+        }
+    ): this;
+
+    easeDataToPromise(
+        key: string,
+        value: number,
+        duration?: number,
+        ease?: string
+    ): Promise<any>;
+
+    easeDataToPromise(
+        config: {
+            key: string,
+            value: number,
+            duration?: number,
+            ease?: string,
+            speed?: number
+        }
+    ): Promise<any>;
+
+    stopEaseData(
+        key: string,
+        toEnd?: boolean
+    ): this;
+
+    stopAllEaseData(
+        toEnd?: boolean
+    ): this;
+
     setAnchor(config: {
         left?: string, right?: string, centerX?: string, x?: string,
         top?: string, bottom?: string, centerY?: string, y?: string
@@ -404,6 +452,25 @@ declare class BaseSizer extends ContainerLite {
 
     disableClick(): this;
 
+    onTouching(
+        callback: (
+            inTouch: InTouching,
+            gameObject: Phaser.GameObjects.GameObject,
+            pointer: Phaser.Input.Pointer,
+        ) => void,
+        scope?: object,
+        config?: InTouching.IConfig
+    ): this;
+
+    offTouching(
+        callback: Function,
+        scope?: object
+    ): this;
+
+    setChildrenInteractive(
+        config: SetChildrenInteractive.IConfig
+    ): this;
+
     show(
         gameObject: Phaser.GameObjects.GameObject
     ): this;
@@ -415,6 +482,11 @@ declare class BaseSizer extends ContainerLite {
     isShow(
         gameObject: Phaser.GameObjects.GameObject
     ): boolean;
+
+    broadcastEvent(
+        event: string,
+        ...args: any[]
+    ): this;
 
     getShownChildren(
         out?: Phaser.GameObjects.GameObject[]

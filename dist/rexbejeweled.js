@@ -281,7 +281,7 @@
 
       if (this.parent && this.parent === this.scene) {
         // parent is a scene
-        this.scene.events.once('shutdown', this.onSceneDestroy, this);
+        this.scene.sys.events.once('shutdown', this.onSceneDestroy, this);
       } else if (this.parent && this.parent.once) {
         // bob object does not have event emitter
         this.parent.once('destroy', this.onParentDestroy, this);
@@ -299,7 +299,7 @@
 
         if (this.parent && this.parent === this.scene) {
           // parent is a scene
-          this.scene.events.off('shutdown', this.onSceneDestroy, this);
+          this.scene.sys.events.off('shutdown', this.onSceneDestroy, this);
         } else if (this.parent && this.parent.once) {
           // bob object does not have event emitter
           this.parent.off('destroy', this.onParentDestroy, this);
@@ -566,20 +566,25 @@
       }
     }, {
       key: "addState",
-      value: function addState(name, config) {
-        var getNextStateCallback = GetValue$9(config, 'next', undefined);
+      value: function addState(name, state) {
+        if (typeof name !== 'string') {
+          state = name;
+          name = state.name;
+        }
+
+        var getNextStateCallback = state.next;
 
         if (getNextStateCallback) {
           this['next_' + name] = getNextStateCallback;
         }
 
-        var exitCallback = GetValue$9(config, 'exit', undefined);
+        var exitCallback = state.exit;
 
         if (exitCallback) {
           this['exit_' + name] = exitCallback;
         }
 
-        var enterCallback = GetValue$9(config, 'enter', undefined);
+        var enterCallback = state.enter;
 
         if (enterCallback) {
           this['enter_' + name] = enterCallback;
@@ -590,34 +595,72 @@
     }, {
       key: "addStates",
       value: function addStates(states) {
-        for (var name in states) {
-          this.addState(name, states[name]);
+        if (Array.isArray(states)) {
+          for (var i = 0, cnt = states.length; i < cnt; i++) {
+            this.addState(states[i]);
+          }
+        } else {
+          for (var name in states) {
+            this.addState(name, states[name]);
+          }
         }
 
         return this;
       }
     }, {
+      key: "runMethod",
+      value: function runMethod(methodName, a1, a2, a3, a4, a5) {
+        var fn = this[methodName + '_' + this.state];
+
+        if (!fn) {
+          return undefined;
+        } // Copy from eventemitter3
+
+
+        var len = arguments.length;
+
+        switch (len) {
+          case 1:
+            return fn.call(this);
+
+          case 2:
+            return fn.call(this, a1);
+
+          case 3:
+            return fn.call(this, a1, a2);
+
+          case 4:
+            return fn.call(this, a1, a2, a3);
+
+          case 5:
+            return fn.call(this, a1, a2, a3, a4);
+
+          case 6:
+            return fn.call(this, a1, a2, a3, a4, a5);
+        }
+
+        var args = new Array(len - 1);
+
+        for (var i = 1; i < len; i++) {
+          args[i - 1] = arguments[i];
+        }
+
+        return fn.apply(this, args);
+      }
+    }, {
       key: "update",
-      value: function update(time, delta, key) {
-        if (key === undefined) {
-          key = 'update';
-        }
-
-        var fn = this[key + '_' + this.state];
-
-        if (fn) {
-          fn.call(this, time, delta);
-        }
+      value: function update(time, delta) {
+        this.runMethod('update', time, delta);
       }
     }, {
       key: "preupdate",
       value: function preupdate(time, delta) {
-        this.update(time, delta, 'preupdate');
+        this.runMethod('preupdate', time, delta);
       }
     }, {
       key: "postupdate",
       value: function postupdate(time, delta) {
-        this.update(time, delta, 'postupdate');
+        this.runMethod('postupdate', time, delta);
       }
     }]);
 
@@ -836,7 +879,7 @@
       value: function startTicking() {
         _get(_getPrototypeOf(SceneUpdateTickTask.prototype), "startTicking", this).call(this);
 
-        this.scene.events.on('update', this.update, this);
+        this.scene.sys.events.on('update', this.update, this);
       }
     }, {
       key: "stopTicking",
@@ -845,7 +888,7 @@
 
         if (this.scene) {
           // Scene might be destoryed
-          this.scene.events.off('update', this.update, this);
+          this.scene.sys.events.off('update', this.update, this);
         }
       } // update(time, delta) {
       //     
@@ -1003,6 +1046,12 @@
         }
       }
     }, {
+      key: "setT",
+      value: function setT(t) {
+        this.t = t;
+        return this;
+      }
+    }, {
       key: "isIdle",
       get: function get() {
         return this.state === IDLE;
@@ -1129,6 +1178,7 @@
       value: function resetFromJSON(o) {
         this.timer.resetFromJSON(GetValue$6(o, 'timer'));
         this.setEnable(GetValue$6(o, 'enable', true));
+        this.setTarget(GetValue$6(o, 'target', this.parent));
         this.setDelay(GetAdvancedValue$1(o, 'delay', 0));
         this.setDuration(GetAdvancedValue$1(o, 'duration', 1000));
         this.setEase(GetValue$6(o, 'ease', 'Linear'));
@@ -1143,6 +1193,16 @@
         }
 
         this.enable = e;
+        return this;
+      }
+    }, {
+      key: "setTarget",
+      value: function setTarget(target) {
+        if (target === undefined) {
+          target = this.parent;
+        }
+
+        this.target = target;
         return this;
       }
     }, {
@@ -1195,26 +1255,38 @@
         return this;
       }
     }, {
+      key: "stop",
+      value: function stop(toEnd) {
+        if (toEnd === undefined) {
+          toEnd = false;
+        }
+
+        _get(_getPrototypeOf(EaseValueTaskBase.prototype), "stop", this).call(this);
+
+        if (toEnd) {
+          this.timer.setT(1);
+          this.updateGameObject(this.target, this.timer);
+          this.complete();
+        }
+
+        return this;
+      }
+    }, {
       key: "update",
       value: function update(time, delta) {
-        if (!this.isRunning || !this.enable) {
+        if (!this.isRunning || !this.enable || !this.parent.active) {
           return this;
         }
 
-        var gameObject = this.parent;
-
-        if (!gameObject.active) {
-          return this;
-        }
-
-        var timer = this.timer;
+        var target = this.target,
+            timer = this.timer;
         timer.update(time, delta); // isDelay, isCountDown, isDone
 
         if (!timer.isDelay) {
-          this.updateGameObject(gameObject, timer);
+          this.updateGameObject(target, timer);
         }
 
-        this.emit('update', gameObject, this);
+        this.emit('update', target, this);
 
         if (timer.isDone) {
           this.complete();
@@ -1225,7 +1297,7 @@
 
     }, {
       key: "updateGameObject",
-      value: function updateGameObject(gameObject, timer) {}
+      value: function updateGameObject(target, timer) {}
     }]);
 
     return EaseValueTaskBase;

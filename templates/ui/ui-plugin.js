@@ -1,6 +1,7 @@
 import ObjectFactory from './ObjectFactory.js';
 
 import NinePatchFactory from './ninepatch/Factory.js';
+import NinePatch2Factory from './ninepatch2/Factory.js';
 import RoundRectangleFactory from './roundrectangle/Factory.js';
 import RoundRectangleCanvasFactory from './roundrectanglecanvas/Factory.js';
 import BBCodeTextFactory from './bbcodetext/Factory.js';
@@ -33,12 +34,14 @@ import ButtonsFactory from './buttons/Factory.js';
 import GridButtonsFactory from './gridbuttons/Factory.js';
 import FixWidthButtons from './fixwidthbuttons/Factory.js';
 import DialogFactory from './dialog/Factory.js';
+import HolyGrailFactory from './holygrail/Factory.js';
 import TabsFactory from './tabs/Factory.js';
 import SliderFactory from './slider/Factory.js';
 import GridTableFactory from './gridtable/Factory.js';
 import MenuFactory from './menu/Factory.js';
 import TextBoxFactory from './textbox/Factory.js';
 import NumberBarFactory from './numberbar/Factory.js';
+import ScrollBarFactory from './scrollbar/Factory.js';
 import BadgeLabelFactory from './badgelabel/Factory.js';
 import PagesFactory from './pages/Factory.js';
 import TextAreaFactory from './textarea/Factory.js';

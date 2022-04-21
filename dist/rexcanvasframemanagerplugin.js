@@ -188,19 +188,28 @@
     return this;
   };
 
-  var GetValue$1 = Phaser.Utils.Objects.GetValue;
+  var AddToBitmapFont = function AddToBitmapFont() {
+    var textureKey = this.texture.key; // Don't add a new font data, reuse current font data
 
-  var AddToBitmapFont = function AddToBitmapFont(config) {
-    var lineSpacing = GetValue$1(config, 'lineSpacing', 0);
-    var textureKey = this.texture.key;
+    var cacheData = this.bitmapFontCache.get(textureKey);
+
+    if (!cacheData) {
+      cacheData = {
+        data: {
+          retroFont: true,
+          font: textureKey,
+          size: this.cellWidth,
+          lineHeight: this.cellHeight,
+          chars: {}
+        },
+        texture: textureKey,
+        frame: null
+      };
+      this.bitmapFontCache.add(textureKey, cacheData);
+    }
+
+    var charData = cacheData.data.chars;
     var letters = this.frameNames;
-    var data = {
-      retroFont: true,
-      font: textureKey,
-      size: this.cellWidth,
-      lineHeight: this.cellHeight + lineSpacing,
-      chars: {}
-    };
 
     for (var i = 0, cnt = letters.length; i < cnt; i++) {
       var _char = letters[i];
@@ -214,7 +223,7 @@
           y = frame.cutY,
           width = frame.cutWidth,
           height = frame.cutHeight;
-      data.chars[_char.charCodeAt(0)] = {
+      charData[_char.charCodeAt(0)] = {
         x: x,
         y: y,
         width: width,
@@ -233,11 +242,6 @@
       };
     }
 
-    this.bitmapFontCache.add(textureKey, {
-      data: data,
-      texture: textureKey,
-      frame: null
-    });
     return this;
   };
 
@@ -281,10 +285,10 @@
         cellHeight = 64;
       }
 
-      this.texture = scene.textures.createCanvas(key, width, height);
+      this.texture = scene.sys.textures.createCanvas(key, width, height);
       this.canvas = this.texture.getCanvas();
       this.context = this.texture.getContext();
-      this.bitmapFontCache = scene.cache.bitmapFont;
+      this.bitmapFontCache = scene.sys.cache.bitmapFont;
 
       if (fillColor !== undefined) {
         var context = this.context;
@@ -292,13 +296,15 @@
         context.fillRect(0, 0, this.canvas.width, this.canvas.height);
       }
 
+      this.key = key;
       this.width = width;
       this.height = height;
       this.cellWidth = cellWidth;
       this.cellHeight = cellHeight;
       this.columnCount = Math.floor(width / cellWidth);
       this.rowCount = Math.floor(height / cellHeight);
-      this.frameNames = Array(this.columnCount * this.rowCount);
+      this.totalCount = this.columnCount * this.rowCount;
+      this.frameNames = Array(this.totalCount);
 
       for (var i = 0, cnt = this.frameNames.length; i < cnt; i++) {
         this.frameNames[i] = undefined;
@@ -365,6 +371,20 @@
 
         this.addFrameName(index, undefined);
         this.texture.remove(frameName); // Don't clear canvas
+
+        return this;
+      }
+    }, {
+      key: "clear",
+      value: function clear() {
+        for (var i, cnt = this.frameNames.length; i < cnt; i++) {
+          var frameName = this.frameNames[i];
+
+          if (frameName !== undefined) {
+            this.addFrameName(index, undefined);
+            this.texture.remove(frameName);
+          }
+        }
 
         return this;
       }

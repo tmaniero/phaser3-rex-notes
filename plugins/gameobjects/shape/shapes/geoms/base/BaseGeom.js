@@ -1,5 +1,5 @@
 import StyleMethods from './StyleMethods.js';
-import DataMethods from './DataMethods.js';
+import DataMethods from '../../../../../utils/data/DataMethods.js';
 
 class BaseGeom {
     constructor() {
@@ -23,8 +23,10 @@ class BaseGeom {
     }
 
     reset() {
-        this.fillStyle();
-        this.lineStyle();
+        this
+            .fillStyle()
+            .lineStyle();
+
         return this;
     }
 
@@ -37,7 +39,7 @@ class BaseGeom {
     }
 
     updateData() {
-
+        this.dirty = false;
     }
 }
 

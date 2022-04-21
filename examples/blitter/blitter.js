@@ -1,7 +1,5 @@
 import phaser from 'phaser/src/phaser.js';
-import Blitter from '../../plugins/gameobjects/blitter/blitterbase/Blitter.js';
-import CreateRectangleTexture from '../../plugins/utils/texture/CreateRectangleTexture.js';
-import LogMaxDelta from '../../plugins/utils/system/LogMaxDelta.js'
+import BlitterPlugin from '../../plugins/blitter-plugin.js'
 
 class Demo extends Phaser.Scene {
     constructor() {
@@ -11,33 +9,56 @@ class Demo extends Phaser.Scene {
     }
 
     preload() {
+        this.load.image('mushroom', 'assets/images/mushroom.png');
     }
 
     create() {
-        CreateRectangleTexture(this, 'dot', 16);
-        var blitter = new Blitter(this, 400, 300, 'dot');
+        var blitter = this.add.rexBlitter(400, 300, 'mushroom');
         this.add.existing(blitter);
 
-        var points = [
-            { x: 400, y: 300, color: 0xff0000, scale: 1 },
-            { x: 200, y: 200, color: 0x00ff00, scale: 2 },
-            { x: 600, y: 400, color: 0x0000ff, scale: 3 },
-        ]
+        blitter
+            .setSize(300, 300)
+            .setOrigin(0.5)
+            .addImage({
+                x: 150, y: 0,
+                // angle: 180,
+                flipY: true,
+                // scale: 1.2,
+                originX: 1, originY: 0,
+                depth: 0,
+            })
+        // .addImage({
+        //     x: -6, y: -6,
+        //     angle: 180,
+        //     alpha: 0.3,
+        //     //scale: 1.2,
+        //     originX: 0.5, originY: 0.5,
+        //     color: 0xff0000, tintEffect: 1,
+        //     depth: -1
+        // })
+        // .addImage({
+        //     x: -3, y: -3,
+        //     angle: 180,
+        //     alpha: 0.7,
+        //     //scale: 1.2,
+        //     originX: 0.5, originY: 0.5,
+        //     color: 0xff0000, tintEffect: 1,
+        //     depth: -1
+        // })
 
-        for (var i = 0, cnt = points.length; i < cnt; i++) {
-            var point = points[i];
-            blitter.create(point.x - blitter.x, point.y - blitter.y)
-                .setTint(point.color)
-                .setScale(point.scale)
-        }
 
-        this.blitter = blitter;
+        this.add.graphics({
+            lineStyle: {
+                color: 0x00ffff,
+                width: 2
+            }
+        })
+            .strokeRectShape(blitter.getBounds())
+
+        this.add.circle(400, 300, 10, 0x0000ff);
     }
 
-    update(time) {
-        this.blitter.rotation += 0.01;
-        LogMaxDelta(time);
-    }
+    update(time) { }
 }
 
 var config = {
@@ -50,6 +71,13 @@ var config = {
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     scene: Demo,
+    plugins: {
+        global: [{
+            key: 'rexBlitter',
+            plugin: BlitterPlugin,
+            start: true
+        }]
+    }
 };
 
 var game = new Phaser.Game(config);

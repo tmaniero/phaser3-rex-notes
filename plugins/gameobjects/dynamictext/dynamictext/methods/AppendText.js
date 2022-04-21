@@ -6,7 +6,7 @@ var AppendText = function (text, style) {
         this.textStyle.modify(style);
     }
 
-    this.lastAppendedChildren.length = 0;
+    var bobArray = [];
     for (var i = 0, cnt = text.length; i < cnt; i++) {
         var char = text.charAt(i);
         var bob = this.poolManager.allocate(CharTypeName);
@@ -25,9 +25,11 @@ var AppendText = function (text, style) {
         }
         // bob.modifyPorperties(properties);  // Warning: Will modify text-style twice
 
-        this.children.push(bob);
-        this.lastAppendedChildren.push(bob);
+        bobArray.push(bob);
     }
+
+    this.addChild(bobArray);
+
     return this;
 };
 

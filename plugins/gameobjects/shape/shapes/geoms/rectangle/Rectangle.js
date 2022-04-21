@@ -2,9 +2,8 @@ import BaseGeom from '../base/BaseGeom.js';
 import StrokePathWebGL from '../../../utils/render/StrokePathWebGL.js';
 import FillStyleCanvas from '../../../utils/render/FillStyleCanvas.js';
 import LineStyleCanvas from '../../../utils/render/LineStyleCanvas.js';
-import GetPoint from '../../../../../geom/utils/GetPoint.js';
 
-const Utils = Phaser.Renderer.WebGL.Utils;
+const GetTint = Phaser.Renderer.WebGL.Utils.getTintAppendFloatAlpha;
 
 class Rectangle extends BaseGeom {
     constructor(x, y, width, height) {
@@ -81,13 +80,15 @@ class Rectangle extends BaseGeom {
         this.pathData.push(x1, y1);
         this.pathData.push(x0, y1);
         this.pathData.push(x0, y0);
+
+        super.updateData();
         return this;
     }
 
     webglRender(pipeline, calcMatrix, alpha, dx, dy) {
         if (this.isFilled) {
             var fillTint = pipeline.fillTint;
-            var fillTintColor = Utils.getTintAppendFloatAlpha(this.fillColor, this.fillAlpha * alpha);
+            var fillTintColor = GetTint(this.fillColor, this.fillAlpha * alpha);
 
             fillTint.TL = fillTintColor;
             fillTint.TR = fillTintColor;

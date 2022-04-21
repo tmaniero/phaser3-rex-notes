@@ -43,7 +43,7 @@ class DragSpeed extends ComponentBase {
         }
 
         this.parent.on('pointermove', this.onPointerMove, this);
-        this.scene.events.on('preupdate', this.preupdate, this);
+        this.scene.sys.events.on('preupdate', this.preupdate, this);
     }
 
     shutdown(fromScene) {
@@ -58,7 +58,7 @@ class DragSpeed extends ComponentBase {
         // this.parent.off('pointerout', this.onPointOut, this);
         // this.parent.off('pointermove', this.onPointerMove, this);
 
-        this.scene.events.off('preupdate', this.preupdate, this);
+        this.scene.sys.events.off('preupdate', this.preupdate, this);
 
         this.pointer = undefined;
 
@@ -181,10 +181,10 @@ class DragSpeed extends ComponentBase {
         this.justMoved = false;
         if (pointer && (!this.isInTouched)) {
             // Touch start
-            this.x = pointer.x;
-            this.y = pointer.y;
-            this.preX = pointer.x;
-            this.preY = pointer.y;
+            this.x = pointer.worldX;
+            this.y = pointer.worldY;
+            this.preX = pointer.worldX;
+            this.preY = pointer.worldY;
             this.isInTouched = true;
             this.holdStartTime = undefined;
             this.emit('touchstart', pointer, this.localX, this.localY);
@@ -203,8 +203,8 @@ class DragSpeed extends ComponentBase {
                 // Move
                 this.preX = this.x;
                 this.preY = this.y;
-                this.x = pointer.x;
-                this.y = pointer.y;
+                this.x = pointer.worldX;
+                this.y = pointer.worldY;
                 this.holdStartTime = undefined;
                 this.justMoved = true;
                 this.emit('touchmove', pointer, this.localX, this.localY);

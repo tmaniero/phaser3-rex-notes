@@ -178,6 +178,10 @@
   };
 
   var Clear$1 = function Clear(obj) {
+    if (_typeof(obj) !== 'object' || obj === null) {
+      return obj;
+    }
+
     if (Array.isArray(obj)) {
       obj.length = 0;
     } else {
@@ -185,6 +189,8 @@
         delete obj[key];
       }
     }
+
+    return obj;
   };
 
   /**

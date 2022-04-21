@@ -114,11 +114,19 @@ var table = scene.rexUI.add.gridTable({
     },
 
     slider: {
-        background: sliderBackgroundGameObject,
+        // background: sliderBackgroundGameObject,
         track: trackGameObject,
         thumb: thumbGameObject,
-        input: 'drag',
-        position: 'right',
+        // input: 'drag',
+        // position: 'right',
+        // adaptThumbSize: false,
+        // minThumbSize: undefined,
+        
+        // buttons: {
+        //     top: topButtonGameObject, bottom: bottomButtonGameObject,
+        //     left: leftButtonGameObject, right: rightButtonGameObject,
+        //     step: 0.01,
+        // }
     },
 
     scroller: {
@@ -211,9 +219,11 @@ var table = scene.rexUI.add.gridTable({
     - `table.height` : Height of table, in pixels.
         - Set to `undefined` to expand table height to fit this grid table object.
     - `table.cellHeight` : Default height of each cell.
-        - Expand cell height to fit table height : set `cellHeight` to `undefined`, and `scrollMode` is `'horizontal'`.
+        - Necessary field in *vertical* scrollMode.
+        - `undefined` :  Expand cell height to fit table height, in *horizontal* scrollMode.
     - `table.cellWidth` : Width of each cell.
-        - Expand cell width to fit table width : set `cellWidth` to `undefined`, and `scrollMode` is `'vertical'`.
+        - Necessary field in *horizontal* scrollMode.
+        - `undefined` : Expand cell width to fit table width, in *vertical* scrollMode.
     - `table.columns` : Columns count of each row.
     - `table.mask` : A rectangle mask of cells
         - `table.mask.padding` : Extra left/right/top/bottom padding spacing of this rectangle mask. Default value is `0`.
@@ -247,6 +257,16 @@ var table = scene.rexUI.add.gridTable({
     - `slider.position` : Position of this sldier.
         - `0`, `'right'`, `'bottom'` : Sldier at right/bottom side. Default value.
         - `1`, `'left'`, `'top'` : Sldier at left/top side.
+    - `slider.adaptThumbSize` :
+        - `false` : Don't adjust height/width of thumb. Default behavior.
+        - `true` : Adjust height/width of thumb according to ratio of visible child.
+            - Minimum height/width of thumb = `slider.minThumbSize`. If content is larger then a page.
+            - Maximum height/width of thumb = height/width of `slider.track`. If content is less then a page.
+    - `slider.minThumbSize` : Minimum height/width of thumb used in `slider.adaptThumbSize` mode.
+    - `slider.buttons` : Press button to scroll content in each tick.
+        - `slider.buttons.top`, `slider.buttons.bottom` : Top and bottom buttons.
+        - `slider.buttons.left`, `slider.buttons.right` : Left and right buttons
+        - `slider.buttons.step` : Scrolling step in each tick. Default value is `0.01`.
     - Set to `false` to skip creating slider.
 - `scroller` : Configuration of scroller behavior.
     - `scroller.threshold` : Minimal movement to scroll. Set `0` to scroll immediately.
@@ -562,6 +582,18 @@ See [base sizer object](ui-basesizer.md).
 - Scroll table
     ```javascript
     table.on('scroll', function(table) {
+        // ...
+    })
+    ```
+- Scroller drag start
+    ```javascript
+    table.getElement('scroller').on('dragstart', function(panel) {
+        // ...
+    })
+    ```
+- Scroller drag end
+    ```javascript
+    table.getElement('scroller').on('dragend', function(panel) {
         // ...
     })
     ```

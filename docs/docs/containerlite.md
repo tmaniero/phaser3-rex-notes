@@ -153,12 +153,42 @@ container.add(child);  // child: a game object
 // container.pin(child);
 ```
 
+- `child` : A game object
+
+or
+
+```javascript
+container.pin(child, {
+    // syncPosition: true,
+    // syncRotation: true,
+    // syncScale : true,
+    // syncAlpha: true,
+});
+```
+
+- `child` : A game object
+- `syncPosition` : 
+    - `true` : Sync position of child, default behavior.
+    - `false` : Don't sync position of child.
+- `syncRotation` : 
+    - `true` : Sync angle of child, default behavior.
+    - `false` : Don't sync angle of child.
+- `syncScale` : 
+    - `true` : Sync scale of child, default behavior.
+    - `false` : Don't sync angle of child.    
+- `syncAlpha` : 
+    - `true` : Sync alpha of child, default behavior.
+    - `false` : Don't sync alpha of child. 
+
+
 Or add(pin) children
 
 ```javascript
-container.addMultiple(children);  // children: an array of game objects
-// container.add(children);  // children: an array of game objects
+container.addMultiple(children);
+// container.add(children);
 ```
+
+- `children` : An array of game objects
 
 These world properties of children will be changed with container.
 
@@ -184,6 +214,17 @@ or
 
 ```javascript
 container.addLocalMultiple(children);
+```
+
+or
+
+```javascript
+container.pinLocal(child, {
+    // syncPosition: true,
+    // syncRotation: true,
+    // syncScale : true,
+    // syncAlpha: true,
+});
 ```
 
 Add child to container with related properties, like official container.  

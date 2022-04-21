@@ -125,6 +125,14 @@ class Demo extends Phaser.Scene {
                 });
         })
         */
+
+        scrollablePanel.getElement('scroller')
+            .on('dragstart', function () {
+                console.log('scroller.dragstart')
+            })
+            .on('dragend', function () {
+                console.log('scroller.dragend')
+            })
     }
 
     update() { }

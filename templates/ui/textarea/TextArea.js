@@ -16,15 +16,18 @@ class TextArea extends Scrollable {
         var textObject = GetValue(config, 'text', undefined);
         var textWidth = GetValue(config, 'textWidth', undefined);
         var textHeight = GetValue(config, 'textHeight', undefined);
-        var textMask = GetValue(config, 'textMask', true);
+        var textCrop = GetValue(config, 'textCrop', !!textObject.setCrop);
+        var textMask = GetValue(config, 'textMask', !textCrop);
         var content = GetValue(config, 'content', '');
         var textBlock = new TextBlock(scene, {
             width: textWidth,
             height: textHeight,
             text: textObject,
             textMask: textMask,
+            textCrop: textCrop && !textMask,
             content: content,
-            clamplTextOY: GetValue(config, 'clamplChildOY', false)
+            clamplTextOY: GetValue(config, 'clamplChildOY', false),
+            alwaysScrollable: GetValue(config, 'alwaysScrollable', false),
         });
         scene.add.existing(textBlock); // Important: Add to display list for touch detecting
         var proportion = (textWidth === undefined) ? 1 : 0;
@@ -59,11 +62,6 @@ class TextArea extends Scrollable {
 
     get contentHeight() {
         return this.childrenMap.child.textHeight;
-    }
-
-    scrollLastLineToButtom() {
-        this.childrenMap.child.scrollLastLineToButtom();
-        return this;
     }
 }
 

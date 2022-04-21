@@ -88,14 +88,23 @@ var textArea = scene.rexUI.add.textArea({
     text: textGameObject,
     // textWidth: undefined,
     // textHeight: undefined,
-    // textMask: true,
+    // textMask: false,
+    // alwaysScrollable: false,
 
     slider: {
-        background: sliderBackgroundGameObject,
+        // background: sliderBackgroundGameObject,
         track: trackGameObject,
         thumb: thumbGameObject,
-        input: 'drag',
-        position: 'right',
+        // input: 'drag',
+        // position: 'right',
+        // adaptThumbSize: false,
+        // minThumbSize: undefined,
+        
+        // buttons: {
+        //     top: topButtonGameObject, bottom: bottomButtonGameObject,
+        //     left: leftButtonGameObject, right: rightButtonGameObject,
+        //     step: 0.01,
+        // }
     },
 
     scroller: {
@@ -168,8 +177,8 @@ var textArea = scene.rexUI.add.textArea({
 - `textWidth` : Fixed width of text game object. Set `undefined` to ignore this feature.
 - `textHeight` : Fixed height of text game object. Set `undefined` to ignore this feature.
 - `textMask` :
-    - `true` : Apply mask on text. Default behavior.
-    - `false` : Don't apply mask on text.
+    - `false` : Crop text game object. Default behavior if text game object has `setCrop` method.
+    - `true` : Apply mask on text to crop text game object. Default behavior if text game object does not have `setCrop` method (ex. bitmaptext game object).
 - `slider` : Componments of slider, optional.
     - `slider.background` : Game object of slider background, optional.
     - `slider.track` : Game object of track.
@@ -181,6 +190,16 @@ var textArea = scene.rexUI.add.textArea({
     - `slider.position` : Position of this sldier.
         - `0`, `'right'`, `'bottom'` : Sldier at right/bottom side. Default value.
         - `1`, `'left'`, `'top'` : Sldier at left/top side.
+    - `slider.adaptThumbSize` :
+        - `false` : Don't adjust height/width of thumb. Default behavior.
+        - `true` : Adjust height/width of thumb according to ratio of visible child.
+            - Minimum height/width of thumb = `slider.minThumbSize`. If content is larger then a page.
+            - Maximum height/width of thumb = height/width of `slider.track`. If content is less then a page.
+    - `slider.minThumbSize` : Minimum height/width of thumb used in `slider.adaptThumbSize` mode.
+    - `slider.buttons` : Press button to scroll content in each tick.
+        - `slider.buttons.top`, `slider.buttons.bottom` : Top and bottom buttons.
+        - `slider.buttons.left`, `slider.buttons.right` : Left and right buttons
+        - `slider.buttons.step` : Scrolling step in each tick. Default value is `0.01`.
     - Set to `false` to skip creating slider.
 - `scroller` : Configuration of scroller behavior.
     - `scroller.threshold` : Minimal movement to scroll. Set `0` to scroll immediately.
@@ -197,6 +216,9 @@ var textArea = scene.rexUI.add.textArea({
     - `mouseWheelScroller.speed` : Scrolling speed, default value is `0.1`.
     - Set to `false` to skip creating mouse-wheel-scroller. Default behavior.
 - `clamplChildOY` : Set `true` to clamp scrolling.
+- `alwaysScrollable` : 
+    - `false` : Can't scroll if content is less then 1 page. Default behavior.
+    - `true` : Can scroll in all cases
 - `header` : Game object of header, optional.
 - `footer` : Game object of footer, optional.
 - `space` : Pads spaces
@@ -333,10 +355,6 @@ See also - [dirty](ui-basesizer.md#dirty)
     textArea.scrollToBottom();
     ```
     - Equal to `textArea.t = 1;`
-- Scroll last line to bottom
-    ```javascript
-    textArea.scrollLastLineToButtom();
-    ```
 
 #### Enable/disable scrolling
 
@@ -369,9 +387,21 @@ See also - [dirty](ui-basesizer.md#dirty)
 
 ### Event
 
-- On scroll
+- Scroll
     ```javascript
     textArea.on('scroll', function(textArea) {
+        // ...
+    })
+    ```
+- Scroller drag start
+    ```javascript
+    textArea.getElement('scroller').on('dragstart', function(panel) {
+        // ...
+    })
+    ```
+- Scroller drag end
+    ```javascript
+    textArea.getElement('scroller').on('dragend', function(panel) {
         // ...
     })
     ```

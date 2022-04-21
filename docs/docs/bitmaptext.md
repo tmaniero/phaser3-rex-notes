@@ -15,7 +15,7 @@ Drawing text by texture, built-in game object of phaser.
     - Reference: [load bitmap font](loader.md#bitmap-font)
     - Loaded texture also can be used for [Image](image.md), [Sprite](sprite.md), or [Arcade Image](arcade-gameobject.md#image-object), [Arcade Sprite](arcade-gameobject.md#sprite-object)
         ```javascript
-        scene.add.image(x, y, key);
+        scene.add.image(x, y, key, char);
         ```
 - Load retro bitmap font from texture and JSON configuration
     1. Load texture in *preload* stage
@@ -181,6 +181,10 @@ txt.setFont(key);
 // txt.setFont(key, size, align);
 ```
 
+### Tint
+
+See [Tint](gameobject.md#tint).
+
 ### Color of characters
 
 - By character
@@ -229,6 +233,9 @@ txt.dropShadowAlpha = alpha;
 - `x`, `y` : The horizontal/vertical offset of the drop shadow.
 - `color` : The color of the drop shadow.
 - `alpha` : The alpha of the drop shadow.
+
+!!! note
+    WebGL only
 
 ### Wrap
 

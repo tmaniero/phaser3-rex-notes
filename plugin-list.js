@@ -17,9 +17,9 @@ module.exports = {
     'inputtextplugin': './plugins/inputtext-plugin.js',
     'hiddeninputtextplugin': './plugins/hiddeninputtext-plugin.js',
     'youtubeplayerplugin': './plugins/youtubeplayer-plugin.js',
-    'persistenceeffectplugin': './plugins/persistenceeffect-plugin.js',
     'lineplugin': './plugins/line-plugin.js',
     'ninepatchplugin': './plugins/ninepatch-plugin.js',
+    'ninepatch2plugin': './plugins/ninepatch2-plugin.js',
     'perspectiveimageplugin': './plugins/perspectiveimage-plugin.js',
     'quadimageplugin': './plugins/quadimage-plugin.js',
     'shatterimageplugin': './plugins/shatterimage-plugin.js',
@@ -28,6 +28,7 @@ module.exports = {
     'coverplugin': './plugins/cover-plugin.js',
     // texture
     'canvasframemanagerplugin': './plugins/canvasframemanager-plugin.js',
+    'charactercacheplugin': './plugins/charactercache-plugin.js',
     // effect layer (shader)
     'effectlayerplugin': './plugins/effectlayer-plugin.js',
     'outlineeffectlayerplugin': './plugins/outlineeffectlayer-plugin.js',
@@ -44,7 +45,6 @@ module.exports = {
     'gridcutimageplugin': './plugins/gridcutimage-plugin.js',
 
     // input
-    'touchstateplugin': './plugins/touchstate-plugin.js',
     'dragplugin': './plugins/drag-plugin.js',
     'dragspeedplugin': './plugins/dragspeed-plugin.js',
     'sliderplugin': './plugins/slider-plugin.js',
@@ -59,7 +59,9 @@ module.exports = {
     'dragrotateplugin': './plugins/dragrotate-plugin.js',
     'gesturesplugin': './plugins/gestures-plugin.js',
     'toucheventstopplugin': './plugins/toucheventstop-plugin.js',
+    'intouchingplugin': './plugins/intouching-plugin.js',
     'touchhelperplugin': './plugins/touchhelper-plugin.js',
+    'touchstateplugin': './plugins/touchstate-plugin.js',
     'keyshubplugin': './plugins/keyshub-plugin.js',
 
     // member of game object
@@ -67,6 +69,7 @@ module.exports = {
     'scaleplugin': './plugins/scale-plugin.js',
     'flipplugin': './plugins/flip-plugin.js',
     'easemoveplugin': './plugins/easemove-plugin.js',
+    'easedataplugin': './plugins/easedata-plugin.js',
     'pathfollowerplugin': './plugins/pathfollower-plugin.js',
     'movetoplugin': './plugins/moveto-plugin.js',
     'rotatetoplugin': './plugins/rotateto-plugin.js',
@@ -107,6 +110,7 @@ module.exports = {
     'runcommandsplugin': './plugins/runcommands-plugin.js',
     'sequenceplugin': './plugins/sequence-plugin.js',
     'fsmplugin': './plugins/fsm-plugin.js',
+    'statemanagerplugin': './plugins/statemanager-plugin.js',
     'tcrpplugin': './plugins/tcrp-plugin.js',
     'arcadetcrpplugin': './plugins/arcadetcrp-plugin.js',
     'csvscenarioplugin': './plugins/csvscenario-plugin.js',
@@ -208,7 +212,7 @@ module.exports = {
     'customshapes': './templates/ui/customshapes/CustomShapes.js',
     'customprogress': './templates/ui/customprogress/CustomProgress.js',
     'chart': './templates/ui/chart/Chart.js',
-    'dialog': './templates/ui/dialog/Dialog.js',
+    'dialog': './templates/ui/dialog/Dialog.js',   
     'fixwidthsizer': './templates/ui/fixwidthsizer/FixWidthSizer.js',
     'overlapsizer': './templates/ui/overlapsizer/OverlapSizer.js',
     'flip': './templates/ui/flip/Flip.js',
@@ -219,6 +223,7 @@ module.exports = {
     'ninepatch': './templates/ui/ninepatch/NinePatch.js',
     'badgelabel': './templates/ui/badgelabel/BadgeLabel.js',
     'pages': './templates/ui/pages/Pages.js',
+    'holygrail': './templates/ui/holygrail/HolyGrail.js',
     'pan': './templates/ui/pan/Pan.js',
     'pinch': './templates/ui/pinch/Pinch.js',
     'press': './templates/ui/press/Press.js',
@@ -228,6 +233,8 @@ module.exports = {
     'scrollablepanel': './templates/ui/scrollablepanel/ScrollablePanel.js',
     'sizer': './templates/ui/sizer/Sizer.js',
     'slider': './templates/ui/slider/Slider.js',
+    'numberbar': './templates/ui/numberbar/NumberBar.js',
+    'scrollbar': './templates/ui/scrollbar/ScrollBar.js',
     'swipe': './templates/ui/swipe/Swipe.js',
     'tabs': './templates/ui/tabs/Tabs.js',
     'tagtext': './templates/ui/tagtext/TagText.js',

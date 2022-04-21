@@ -21,8 +21,6 @@ class TouchState extends ComponentBase {
         this.y = undefined;
         this.preX = undefined;
         this.preY = undefined;
-        this.localX = undefined;
-        this.localY = undefined;
         this.justMoved = false;
         this.setEnable(GetValue(o, "enable", true));
         return this;
@@ -35,7 +33,7 @@ class TouchState extends ComponentBase {
         gameObject.on('pointerup', this.onPointOut, this);
         gameObject.on('pointerout', this.onPointOut, this);
         gameObject.on('pointermove', this.onPointerMove, this);
-        this.scene.events.on('postupdate', this.postupdate, this);
+        this.scene.sys.events.on('postupdate', this.postupdate, this);
     }
 
     shutdown(fromScene) {
@@ -50,8 +48,8 @@ class TouchState extends ComponentBase {
         // this.parent.off('pointerup', this.onPointOut, this);
         // this.parent.off('pointerout', this.onPointOut, this);
         // this.parent.off('pointermove', this.onPointerMove, this);
-        this.scene.events.off('postupdate', this.postupdate, this);
-        
+        this.scene.sys.events.off('postupdate', this.postupdate, this);
+
         this.pointer = undefined;
         super.shutdown(fromScene);
     }
@@ -139,8 +137,6 @@ class TouchState extends ComponentBase {
         this.preY = pointer.y;
         this.x = pointer.x;
         this.y = pointer.y;
-        this.localX = localX;
-        this.localY = localY;
         this.emit('touchstart', pointer, localX, localY);
     }
 
@@ -164,8 +160,6 @@ class TouchState extends ComponentBase {
         this.preY = this.y;
         this.x = pointer.x;
         this.y = pointer.y;
-        this.localX = localX;
-        this.localY = localY;
         this.justMoved = true;
         this.emit('touchmove', pointer, localX, localY);
     }

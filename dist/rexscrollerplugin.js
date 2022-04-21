@@ -281,7 +281,7 @@
 
       if (this.parent && this.parent === this.scene) {
         // parent is a scene
-        this.scene.events.once('shutdown', this.onSceneDestroy, this);
+        this.scene.sys.events.once('shutdown', this.onSceneDestroy, this);
       } else if (this.parent && this.parent.once) {
         // bob object does not have event emitter
         this.parent.once('destroy', this.onParentDestroy, this);
@@ -299,7 +299,7 @@
 
         if (this.parent && this.parent === this.scene) {
           // parent is a scene
-          this.scene.events.off('shutdown', this.onSceneDestroy, this);
+          this.scene.sys.events.off('shutdown', this.onSceneDestroy, this);
         } else if (this.parent && this.parent.once) {
           // bob object does not have event emitter
           this.parent.off('destroy', this.onParentDestroy, this);
@@ -566,20 +566,25 @@
       }
     }, {
       key: "addState",
-      value: function addState(name, config) {
-        var getNextStateCallback = GetValue$3(config, 'next', undefined);
+      value: function addState(name, state) {
+        if (typeof name !== 'string') {
+          state = name;
+          name = state.name;
+        }
+
+        var getNextStateCallback = state.next;
 
         if (getNextStateCallback) {
           this['next_' + name] = getNextStateCallback;
         }
 
-        var exitCallback = GetValue$3(config, 'exit', undefined);
+        var exitCallback = state.exit;
 
         if (exitCallback) {
           this['exit_' + name] = exitCallback;
         }
 
-        var enterCallback = GetValue$3(config, 'enter', undefined);
+        var enterCallback = state.enter;
 
         if (enterCallback) {
           this['enter_' + name] = enterCallback;
@@ -590,34 +595,72 @@
     }, {
       key: "addStates",
       value: function addStates(states) {
-        for (var name in states) {
-          this.addState(name, states[name]);
+        if (Array.isArray(states)) {
+          for (var i = 0, cnt = states.length; i < cnt; i++) {
+            this.addState(states[i]);
+          }
+        } else {
+          for (var name in states) {
+            this.addState(name, states[name]);
+          }
         }
 
         return this;
       }
     }, {
+      key: "runMethod",
+      value: function runMethod(methodName, a1, a2, a3, a4, a5) {
+        var fn = this[methodName + '_' + this.state];
+
+        if (!fn) {
+          return undefined;
+        } // Copy from eventemitter3
+
+
+        var len = arguments.length;
+
+        switch (len) {
+          case 1:
+            return fn.call(this);
+
+          case 2:
+            return fn.call(this, a1);
+
+          case 3:
+            return fn.call(this, a1, a2);
+
+          case 4:
+            return fn.call(this, a1, a2, a3);
+
+          case 5:
+            return fn.call(this, a1, a2, a3, a4);
+
+          case 6:
+            return fn.call(this, a1, a2, a3, a4, a5);
+        }
+
+        var args = new Array(len - 1);
+
+        for (var i = 1; i < len; i++) {
+          args[i - 1] = arguments[i];
+        }
+
+        return fn.apply(this, args);
+      }
+    }, {
       key: "update",
-      value: function update(time, delta, key) {
-        if (key === undefined) {
-          key = 'update';
-        }
-
-        var fn = this[key + '_' + this.state];
-
-        if (fn) {
-          fn.call(this, time, delta);
-        }
+      value: function update(time, delta) {
+        this.runMethod('update', time, delta);
       }
     }, {
       key: "preupdate",
       value: function preupdate(time, delta) {
-        this.update(time, delta, 'preupdate');
+        this.runMethod('preupdate', time, delta);
       }
     }, {
       key: "postupdate",
       value: function postupdate(time, delta) {
-        this.update(time, delta, 'postupdate');
+        this.runMethod('postupdate', time, delta);
       }
     }]);
 
@@ -723,6 +766,16 @@
         }
 
         this.next();
+      }
+    }, {
+      key: "enter_DRAG",
+      value: function enter_DRAG() {
+        this.parent.onDragStart();
+      }
+    }, {
+      key: "exit_DRAG",
+      value: function exit_DRAG() {
+        this.parent.onDragEnd();
       } // DRAG    
       // SLIDE -> DRAG|IDLE
 
@@ -853,7 +906,7 @@
         }
 
         this.parent.on('pointermove', this.onPointerMove, this);
-        this.scene.events.on('preupdate', this.preupdate, this);
+        this.scene.sys.events.on('preupdate', this.preupdate, this);
       }
     }, {
       key: "shutdown",
@@ -868,7 +921,7 @@
         // this.parent.off('pointermove', this.onPointerMove, this);
 
 
-        this.scene.events.off('preupdate', this.preupdate, this);
+        this.scene.sys.events.off('preupdate', this.preupdate, this);
         this.pointer = undefined;
 
         _get(_getPrototypeOf(DragSpeed.prototype), "shutdown", this).call(this, fromScene);
@@ -1007,10 +1060,10 @@
 
         if (pointer && !this.isInTouched) {
           // Touch start
-          this.x = pointer.x;
-          this.y = pointer.y;
-          this.preX = pointer.x;
-          this.preY = pointer.y;
+          this.x = pointer.worldX;
+          this.y = pointer.worldY;
+          this.preX = pointer.worldX;
+          this.preY = pointer.worldY;
           this.isInTouched = true;
           this.holdStartTime = undefined;
           this.emit('touchstart', pointer, this.localX, this.localY);
@@ -1028,8 +1081,8 @@
             // Move
             this.preX = this.x;
             this.preY = this.y;
-            this.x = pointer.x;
-            this.y = pointer.y;
+            this.x = pointer.worldX;
+            this.y = pointer.worldY;
             this.holdStartTime = undefined;
             this.justMoved = true;
             this.emit('touchmove', pointer, this.localX, this.localY);
@@ -1298,7 +1351,7 @@
     }, {
       key: "boot",
       value: function boot() {
-        this.scene.events.on('preupdate', this._state.update, this._state);
+        this.scene.sys.events.on('preupdate', this._state.update, this._state);
       }
     }, {
       key: "shutdown",
@@ -1308,7 +1361,7 @@
           return;
         }
 
-        this.scene.events.off('preupdate', this._state.update, this._state);
+        this.scene.sys.events.off('preupdate', this._state.update, this._state);
 
         this._state.destroy(fromScene);
 
@@ -1534,6 +1587,18 @@
         } else {
           return 0;
         }
+      } // enter_DRAG
+
+    }, {
+      key: "onDragStart",
+      value: function onDragStart() {
+        this.emit('dragstart');
+      } // exit_DRAG
+
+    }, {
+      key: "onDragEnd",
+      value: function onDragEnd() {
+        this.emit('dragend');
       } // everyTick_DRAG
 
     }, {

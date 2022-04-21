@@ -5,6 +5,7 @@ export default FSM;
 declare namespace FSM {
 
     interface IStateConfig {
+        name?: string,
         next?: string | (() => string),
         enter?: Function,
         exit?: Function,
@@ -47,11 +48,34 @@ declare class FSM extends EventEmitter {
 
     addState(
         name: string,
-        config: FSM.IStateConfig
+        state: FSM.IStateConfig
     ): this;
+    addState(state: FSM.IStateConfig): this;
 
     addStates(
-        config: { [name: string]: FSM.IStateConfig },
+        states: { [name: string]: FSM.IStateConfig },
+    ): this;
+    addStates(
+        states: FSM.IStateConfig[]
     ): this;
 
+    runMethod(
+        methodName: string,
+        ...args: unknown[]
+    ): unknown;
+
+    update(
+        time: number,
+        delta: number
+    ): void;
+
+    preupdate(
+        time: number,
+        delta: number
+    ): void;
+
+    postupdate(
+        time: number,
+        delta: number
+    ): void;
 }

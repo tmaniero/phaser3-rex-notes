@@ -17,6 +17,7 @@ import FullWindowRectangle from './fullwindowrectangle/FullWindowRectangle';
 import Cover from './cover/Cover';
 // import Chart from './chart/Chart';
 import NinePatch from './ninepatch/NinePatch';
+import NinePatch2 from './ninepatch2/NinePatch';
 
 import Sizer from './sizer/Sizer';
 import GridSizer from './gridsizer/GridSizer';
@@ -29,12 +30,14 @@ import Buttons from './buttons/Buttons';
 import GridButtons from './gridbuttons/GridButtons';
 import FixWidthButtons from './fixwidthbuttons/FixWidthButtons';
 import Dialog from './dialog/Dialog';
+import HolyGrail from './holygrail/HolyGrail';
 import Tabs from './tabs/Tabs';
 import Slider from './slider/Slider';
 import GridTable from './gridtable/GridTable';
 import Menu from './menu/Menu';
 import TextBox from './textbox/TextBox';
 import NumberBar from './numberbar/NumberBar';
+import ScrollBar from './scrollbar/ScrollBar';
 import BadgeLabel from './badgelabel/BadgeLabel';
 import Pages from './pages/Pages';
 import TextArea from './textarea/TextArea';
@@ -97,6 +100,7 @@ export {
     CustomShapes,
     CustomProgress,
     NinePatch,
+    NinePatch2,
 
     Sizer,
     GridSizer,
@@ -109,12 +113,14 @@ export {
     GridButtons,
     FixWidthButtons,
     Dialog,
+    HolyGrail,
     Tabs,
     Slider,
     GridTable,
     Menu,
     TextBox,
     NumberBar,
+    ScrollBar,
     BadgeLabel,
     Pages,
     TextArea,

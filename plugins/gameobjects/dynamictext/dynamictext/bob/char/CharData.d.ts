@@ -1,5 +1,5 @@
-import Base from "../Base";
+import RenderBase from '../renderbase/RenderBase';
 
-export default class CharData extends Base {
+export default class CharData extends RenderBase {
     readonly type: 'text';
 }

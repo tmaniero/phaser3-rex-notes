@@ -5,6 +5,9 @@ Dissolve transition post processing filter. ([Reference](https://github.com/ykob
 - Author: Rex
 - A post-fx shader effect
 
+!!! warning "WebGL only"
+    Only work in WebGL render mode.
+
 ## Live demos
 
 - [Dissolve](https://codepen.io/rexrainbow/pen/BaQWqyX)

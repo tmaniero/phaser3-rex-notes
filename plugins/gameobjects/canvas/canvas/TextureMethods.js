@@ -46,13 +46,13 @@ export default {
     },
 
     loadTexture(key, frame) {
-        var textureFrame = this.scene.textures.getFrame(key, frame);
+        var textureFrame = this.scene.sys.textures.getFrame(key, frame);
         if (!textureFrame) {
             return this;
         }
 
         if ((this.width !== textureFrame.cutWidth) || (this.height !== textureFrame.cutHeight)) {
-            this.resize(textureFrame.cutWidth, textureFrame.cutHeight);
+            this.setSize(textureFrame.cutWidth, textureFrame.cutHeight);
         } else {
             this.clear();
         }

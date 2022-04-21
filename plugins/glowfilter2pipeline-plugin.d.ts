@@ -6,9 +6,13 @@ export default GlowFilterPipelinePlugin;
 declare namespace GlowFilterPipelinePlugin {
 
     interface IConfig {
+        quality?: number,
+        distance?: number,
+
         outerStrength?: number,
         innerStrength?: number,
         glowColor?: number,
+        knockout?: boolean,
 
         name?: string,
     }
@@ -35,5 +39,5 @@ declare class GlowFilterPipelinePlugin extends Phaser.Plugins.BasePlugin {
     quality: number;
 
     setDistance(value: number): this;
-    distance: number;    
+    distance: number;
 }
