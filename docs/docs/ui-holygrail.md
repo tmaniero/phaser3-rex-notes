@@ -8,6 +8,7 @@ Layout elements in [Holy grail](https://en.wikipedia.org/wiki/Holy_grail_(web_de
 ## Live demos
 
 - [Simple](https://codepen.io/rexrainbow/pen/abEMByR)
+- [Align](https://codepen.io/rexrainbow/pen/GRyeboN)
 
 ## Usage
 
@@ -68,7 +69,7 @@ Layout elements in [Holy grail](https://en.wikipedia.org/wiki/Holy_grail_(web_de
 - Add holy-grail object
     ```javascript    
     var holyGrail = new HolyGrail(scene, config);
-    sscene.add.existing(holyGrail);
+    scene.add.existing(holyGrail);
     ```
 
 ### Add holyGrail object

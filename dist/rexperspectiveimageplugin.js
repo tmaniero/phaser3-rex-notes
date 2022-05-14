@@ -2,22 +2,16 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.rexperspectiveimageplugin = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
   function _typeof(obj) {
     "@babel/helpers - typeof";
 
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      _typeof = function (obj) {
-        return typeof obj;
-      };
-    } else {
-      _typeof = function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+      return typeof obj;
+    } : function (obj) {
+      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    }, _typeof(obj);
   }
 
   function _classCallCheck(instance, Constructor) {
@@ -39,6 +33,9 @@
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
     return Constructor;
   }
 
@@ -68,6 +65,9 @@
         writable: true,
         configurable: true
       }
+    });
+    Object.defineProperty(subClass, "prototype", {
+      writable: false
     });
     if (superClass) _setPrototypeOf(subClass, superClass);
   }
@@ -147,7 +147,7 @@
     return object;
   }
 
-  function _get(target, property, receiver) {
+  function _get() {
     if (typeof Reflect !== "undefined" && Reflect.get) {
       _get = Reflect.get;
     } else {
@@ -158,14 +158,14 @@
         var desc = Object.getOwnPropertyDescriptor(base, property);
 
         if (desc.get) {
-          return desc.get.call(receiver);
+          return desc.get.call(arguments.length < 3 ? target : receiver);
         }
 
         return desc.value;
       };
     }
 
-    return _get(target, property, receiver || target);
+    return _get.apply(this, arguments);
   }
 
   function set(target, property, value, receiver) {
@@ -296,9 +296,9 @@
   var GetValue$e = Phaser.Utils.Objects.GetValue;
   var GenerateGridVerts = Phaser.Geom.Mesh.GenerateGridVerts;
   var RadToDeg$4 = Phaser.Math.RadToDeg;
-  var DegToRad$5 = Phaser.Math.DegToRad;
+  var DegToRad$6 = Phaser.Math.DegToRad;
   var FOV = 45;
-  var PanZ = 1 + 1 / Math.sin(DegToRad$5(FOV));
+  var PanZ = 1 + 1 / Math.sin(DegToRad$6(FOV));
 
   var Image = /*#__PURE__*/function (_Mesh) {
     _inherits(Image, _Mesh);
@@ -401,7 +401,7 @@
         return RadToDeg$4(this.rotationX);
       },
       set: function set(value) {
-        this.rotationX = DegToRad$5(value);
+        this.rotationX = DegToRad$6(value);
       }
     }, {
       key: "rotationY",
@@ -417,7 +417,7 @@
         return RadToDeg$4(this.rotationY);
       },
       set: function set(value) {
-        this.rotationY = DegToRad$5(value);
+        this.rotationY = DegToRad$6(value);
       }
     }, {
       key: "rotationZ",
@@ -433,7 +433,7 @@
         return RadToDeg$4(this.rotationZ);
       },
       set: function set(value) {
-        this.rotationZ = DegToRad$5(value);
+        this.rotationZ = DegToRad$6(value);
       }
     }, {
       key: "transformVerts",
@@ -847,7 +847,7 @@
     return gameObject;
   };
 
-  var DegToRad$4 = Phaser.Math.DegToRad;
+  var DegToRad$5 = Phaser.Math.DegToRad;
   var RadToDeg$3 = Phaser.Math.RadToDeg;
 
   var GetLocalState = function GetLocalState(gameObject) {
@@ -873,7 +873,7 @@
           return RadToDeg$3(this.rotation);
         },
         set: function set(value) {
-          this.rotation = DegToRad$4(value);
+          this.rotation = DegToRad$5(value);
         }
       });
       Object.defineProperty(rexContainer, 'displayWidth', {
@@ -1195,6 +1195,7 @@
     }
   };
 
+  var DegToRad$4 = Phaser.Math.DegToRad;
   var Rotation = {
     updateChildRotation: function updateChildRotation(child) {
       var state = GetLocalState(child);
@@ -1232,6 +1233,12 @@
     setChildLocalRotation: function setChildLocalRotation(child, rotation) {
       var state = GetLocalState(child);
       state.rotation = rotation;
+      this.updateChildRotation(child);
+      return this;
+    },
+    setChildLocalAngle: function setChildLocalAngle(child, angle) {
+      var state = GetLocalState(child);
+      state.rotation = DegToRad$4(angle);
       this.updateChildRotation(child);
       return this;
     },
@@ -1777,76 +1784,119 @@
     }
   };
 
-  var IsArray = function IsArray(obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
+  var GetLocalStates = function GetLocalStates(gameObjects) {
+    var localStates = [];
+
+    for (var i = 0, cnt = gameObjects.length; i < cnt; i++) {
+      var gameObject = gameObjects[i];
+
+      if (!gameObject.hasOwnProperty('rexContainer')) {
+        continue;
+      }
+
+      localStates.push(gameObject.rexContainer);
+    }
+
+    return localStates;
+  };
+
+  var GetScene = function GetScene(gameObjects) {
+    for (var i = 0, cnt = gameObjects.length; i < cnt; i++) {
+      var scene = gameObjects[i].scene;
+
+      if (scene) {
+        return scene;
+      }
+    }
+
+    return null;
+  };
+
+  var UpdateChild = function UpdateChild(tween, key, target) {
+    if (!target.parent) {
+      // target object was removed, so remove this tween too
+      tween.remove();
+      return;
+    }
+
+    var parent = target.parent;
+    var child = target.self;
+
+    switch (key) {
+      case 'x':
+      case 'y':
+        parent.updateChildPosition(child);
+        break;
+
+      case 'angle':
+      case 'rotation':
+        parent.updateChildRotation(child);
+        break;
+
+      case 'scaleX':
+      case 'scaleY':
+      case 'displayWidth':
+      case 'displayHeight':
+        parent.updateChildScale(child);
+        break;
+
+      case 'alpha':
+        parent.updateChildAlpha(child);
+        break;
+
+      default:
+        parent.updateChildPosition(child);
+        parent.updateChildRotation(child);
+        parent.updateChildScale(child);
+        parent.updateChildAlpha(child);
+        break;
+    }
   };
 
   var Tween = {
     tweenChild: function tweenChild(tweenConfig) {
       var targets = tweenConfig.targets;
 
-      if (!IsArray(targets)) {
+      if (!Array.isArray(targets)) {
         targets = [targets];
       }
 
-      var scene,
-          localTargets = [];
-      var child;
-
-      for (var i = 0, cnt = targets.length; i < cnt; i++) {
-        child = targets[i];
-
-        if (!child.hasOwnProperty('rexContainer')) {
-          continue;
-        }
-
-        scene = child.scene;
-        localTargets.push(child.rexContainer);
-      }
+      var scene = this.scene || GetScene(targets);
 
       if (!scene) {
         return;
+      } // Map child game objects to local states
+
+
+      tweenConfig.targets = GetLocalStates(targets);
+      var tween = scene.tweens.add(tweenConfig); // Update child game object in 'update' event
+
+      tween.on('update', UpdateChild);
+      return tween;
+    },
+    createTweenChildConfig: function createTweenChildConfig(tweenConfig) {
+      var targets = tweenConfig.targets;
+
+      if (targets) {
+        if (!Array.isArray(targets)) {
+          targets = [targets];
+        } // Map child game objects to local states
+
+
+        tweenConfig.targets = GetLocalStates(targets);
       }
 
-      tweenConfig.targets = localTargets;
-      var tween = scene.tweens.add(tweenConfig);
+      var onUpdate = tweenConfig.onUpdate;
 
-      var tweenUpdateListener = function tweenUpdateListener(tween, key, target) {
-        if (!target.parent) {
-          // target object was removed, so remove this tween too to avoid crashing
-          scene.tweens.remove(tween);
-          return;
+      tweenConfig.onUpdate = function (tween, target) {
+        if (onUpdate) {
+          onUpdate(tween, target);
         }
 
-        var parent = target.parent;
-        var child = target.self;
-
-        switch (key) {
-          case 'x':
-          case 'y':
-            parent.updateChildPosition(child);
-            break;
-
-          case 'angle':
-          case 'rotation':
-            parent.updateChildRotation(child);
-            break;
-
-          case 'scaleX':
-          case 'scaleY':
-          case 'displayWidth':
-          case 'displayHeight':
-            parent.updateChildScale(child);
-            break;
-
-          case 'alpha':
-            parent.updateChildAlpha(child);
-            break;
-        }
+        UpdateChild(tween, undefined, target);
       };
 
-      tween.on('update', tweenUpdateListener);
-      return tween;
+      return tweenConfig;
     },
     tween: function tween(tweenConfig) {
       var scene = this.scene;
@@ -1856,6 +1906,26 @@
       }
 
       return scene.tweens.add(tweenConfig);
+    },
+    timelineChild: function timelineChild(timelineConfig) {
+      var targets = timelineConfig.targets; // Map child game objects to local states
+
+      if (targets) {
+        if (!Array.isArray(targets)) {
+          targets = [targets];
+        }
+
+        timelineConfig.targets = GetLocalStates(targets);
+      }
+
+      var tweens = timelineConfig.tweens;
+
+      for (var i = 0, cnt = tweens.length; i < cnt; i++) {
+        tweens[i] = this.createTweenChildConfig(tweens[i]);
+      }
+
+      var timeline = this.scene.tweens.timeline(timelineConfig);
+      return timeline;
     }
   };
 
@@ -4497,8 +4567,12 @@
     return entry;
   };
 
-  var SetValue = function SetValue(target, keys, value) {
-    // no object
+  var SetValue = function SetValue(target, keys, value, delimiter) {
+    if (delimiter === undefined) {
+      delimiter = '.';
+    } // no object
+
+
     if (_typeof(target) !== 'object') {
       return;
     } // invalid key
@@ -4512,7 +4586,7 @@
       }
     } else {
       if (typeof keys === 'string') {
-        keys = keys.split('.');
+        keys = keys.split(delimiter);
       }
 
       var lastKey = keys.pop();
@@ -4570,4 +4644,4 @@
 
   return PerspectiveImagePlugin;
 
-})));
+}));

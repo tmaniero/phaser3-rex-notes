@@ -72,7 +72,7 @@ A container with a panel, slider, and scroller.
 - Add scrollable-panel object
     ```javascript    
     var panel = new ScrollablePanel(scene, config);
-    sscene.add.existing(panel);
+    scene.add.existing(panel);
     ```
 
 ### Add scroll-able panel object
@@ -511,7 +511,7 @@ See [Base-sizer](ui-basesizer.md#set-children-interactive)
 
 #### Individual input events
 
-When [`scene.input.topOnly`](touchevents.md#top-only) is `true` (default value), input events of children elememts will block the drag-scrolling of scrollable panel. (Assmue that the children elememts are above scrollable panel)
+When [`scene.input.topOnly`](touchevents.md#top-only) is `true` (default value), input events of children elements will block the drag-scrolling of scrollable panel. (Assmue that the children elememts are above scrollable panel)
 
 - Set `scene.input.topOnly` to `false` to enable drag-scrolling and input events of children elememts both.
 - Test if pointer is under panel via [`panel.isInTouching()`](ui-basesizer.md#is-in-touching), during input events' callback.

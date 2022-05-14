@@ -2,22 +2,16 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.rexlocalstoragedataplugin = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
   function _typeof(obj) {
     "@babel/helpers - typeof";
 
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      _typeof = function (obj) {
-        return typeof obj;
-      };
-    } else {
-      _typeof = function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+      return typeof obj;
+    } : function (obj) {
+      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    }, _typeof(obj);
   }
 
   function _classCallCheck(instance, Constructor) {
@@ -39,6 +33,9 @@
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
     return Constructor;
   }
 
@@ -53,6 +50,9 @@
         writable: true,
         configurable: true
       }
+    });
+    Object.defineProperty(subClass, "prototype", {
+      writable: false
     });
     if (superClass) _setPrototypeOf(subClass, superClass);
   }
@@ -196,14 +196,26 @@
   };
 
   var Load = function Load(defaultData, reset) {
+    if (defaultData === undefined) {
+      reset = false;
+    }
+
     LoadDataKeys.call(this);
     this.defaultData = defaultData;
     this._syncEnable = false;
     this.reset();
+
+    if (!reset) {
+      // Load data from localstorage according to dataKeys
+      this.dataKeys.iterate(function (dataKey, index) {
+        this.set(dataKey, this.getItem(dataKey));
+      }, this);
+    }
+
     this._syncEnable = true;
 
     if (defaultData) {
-      // Load data according to defaultData
+      // Load data according to defaultData        
       var value, prevValue;
 
       for (var dataKey in defaultData) {
@@ -212,20 +224,7 @@
         this.set(dataKey, value);
       }
 
-      this.dataKeys.each(function (dataKey, index) {
-        if (!(dataKey in defaultData)) {
-          this.removeItem(dataKey);
-          this.dataKeys["delete"](dataKey);
-        }
-      }, this);
       this.setItem('__keys__', this.dataKeys.entries);
-    } else {
-      // Load data from localstorage according to dataKeys
-      this._syncEnable = false;
-      this.dataKeys.iterate(function (dataKey, index) {
-        this.set(dataKey, this.getItem(dataKey));
-      }, this);
-      this._syncEnable = true;
     }
 
     return this;
@@ -247,6 +246,11 @@
       }
 
       this.setItem(key, value);
+
+      if (!this.dataKeys.contains(key)) {
+        this.dataKeys.set(key);
+        this.setItem('__keys__', this.dataKeys.entries);
+      }
     }, dataManager) // Add key
     .on('setdata', function (parent, key, value) {
       if (!this._syncEnable) {
@@ -255,6 +259,7 @@
 
       this.setItem(key, value);
       this.dataKeys.set(key);
+      this.setItem('__keys__', this.dataKeys.entries);
     }, dataManager) // Remove key
     .on('removedata', function (parent, key, value) {
       if (!this._syncEnable) {
@@ -344,7 +349,7 @@
       return _this;
     }
 
-    return DataManager;
+    return _createClass(DataManager);
   }(Base);
 
   var DataManagerPlugin = /*#__PURE__*/function (_Phaser$Plugins$BaseP) {
@@ -398,4 +403,4 @@
 
   return DataManagerPlugin;
 
-})));
+}));

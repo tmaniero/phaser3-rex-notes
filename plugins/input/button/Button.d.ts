@@ -7,6 +7,7 @@ declare namespace Button {
     interface IConfig {
         mode?: 0 | 1 | 'pointerdown' | 'pointerup' | 'press' | 'release',
         clickInterval?: number,
+        threshold?: number,
         enable?: boolean,
 
         eventEmitter?: boolean | Phaser.Events.EventEmitter

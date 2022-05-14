@@ -80,7 +80,7 @@ Flow control of [question manager](quest.md) with a [dialog](ui-dialog.md).
 - Add dialog object
     ```javascript    
     var dialog = new Dialog(scene, config);
-    sscene.add.existing(dialog);
+    scene.add.existing(dialog);
     var quest = new DialogQuest({
         dialog: dialog,
         // ...
@@ -94,6 +94,7 @@ var quest = new DialogQuest({
     dialog: dialog,
 
     questions: undefined,
+    // format: undefined,
     // delimiter: ',',
     // types: {
     //     question: 'q',

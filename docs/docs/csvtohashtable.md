@@ -72,7 +72,7 @@ Hash table indexed by (col-key, row-key) from csv string.
 var table = scene.plugins.get('rexCsvToHashTable').add();
 ```
 
-### Load table from csv string
+### Append rows from csv string
 
 ```javascript
 table.loadCSV(csvString, {
@@ -279,3 +279,14 @@ var callback = function(table, rowKey, colKey, value) {
     // ...
 };
 ```
+
+### JSON
+
+- Table to json
+    ```javascript
+    var jsonData = table.toJSON();
+    ```
+- Reset table by JSON
+    ```javascript
+    table.resetFromJSON(jsonData);
+    ```

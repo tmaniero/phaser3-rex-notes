@@ -80,6 +80,16 @@ declare class ContainerLite extends Base {
         angle: number
     ): this;
 
+    setChildLocalRotation(
+        child: Phaser.GameObjects.GameObject,
+        rotation: number
+    ): this;
+
+    setChildLocalAngle(
+        child: Phaser.GameObjects.GameObject,
+        angle: number
+    ): this;
+
     setChildScale(
         child: Phaser.GameObjects.GameObject,
         scaleX: number,
@@ -151,11 +161,19 @@ declare class ContainerLite extends Base {
 
     tween(
         config: Phaser.Types.Tweens.TweenBuilderConfig | object
-    ): Phaser.Tweens.Tween
+    ): Phaser.Tweens.Tween;
 
     tweenChild(
         config: Phaser.Types.Tweens.TweenBuilderConfig | object
-    ): Phaser.Tweens.Tween
+    ): Phaser.Tweens.Tween;
+
+    createTweenChildConfig(
+        config: Phaser.Types.Tweens.TweenBuilderConfig | object
+    ): Phaser.Types.Tweens.TweenBuilderConfig;
+
+    timelineChild(
+        config: Phaser.Types.Tweens.TimelineBuilderConfig | object
+    ): Phaser.Tweens.Timeline;
 
     getChildren(
         out?: Phaser.GameObjects.GameObject[]

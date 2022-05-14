@@ -68,7 +68,7 @@ Displays text with multi-color, font face, or font size with tags.
 - Add text object
     ```javascript    
     var txt = new TagText(scene, x, y, content, config);
-    sscene.add.existing(txt);
+    scene.add.existing(txt);
     ```
 
 ### Add text object
@@ -82,8 +82,8 @@ var tags = {
       color: 'blue'
     }
 };
-var txt = scene.add.rexTagText(x, y, '<style="tag0">h</style>ello', {tags:tags});
-// var txt = scene.add.rexTagText(x, y, '<style="tag0">h</style>ello', { fontFamily: 'Arial', fontSize: 64, color: '#00ff00', tags:tags });
+var txt = scene.add.rexTagText(x, y, '<class="tag0">h</class>ello', {tags:tags});
+// var txt = scene.add.rexTagText(x, y, '<class="tag0">h</class>ello', { fontFamily: 'Arial', fontSize: 64, color: '#00ff00', tags:tags });
 ```
 
 - `tags` : `{tagName:tag}`, see [Properties of tag](tagtext.md#properties-of-tag).
@@ -116,7 +116,7 @@ Default style
     },
     underline: {
         color: '#000',
-        thinkness: 0,
+        thickness: 0,
         offset: 0
     },
     // align: 'left',  // Equal to halign
@@ -223,7 +223,7 @@ var txt = scene.make.rexTagText({
     color: 'red',            // or 'font-color'
     stroke: {
         color: 'blue',
-        thinkness: 1
+        thickness: 1
     },
     shadow: {
         color: 'black',
@@ -233,7 +233,7 @@ var txt = scene.make.rexTagText({
     },
     underline: {            // or 'u'
         color: 'blue',
-        thinkness: 3,
+        thickness: 3,
         offset: -1
     },
     y: 0,
@@ -262,7 +262,7 @@ var txt = scene.make.rexTagText({
         - If it has a `preUpdate` method, it will be added to the Update List.
 - Create instance
     ```javascript
-    var txt = new MyText(scene, x, y, '<style="tag0">h</style>ello', {tags:tags});
+    var txt = new MyText(scene, x, y, '<class="tag0">h</class>ello', {tags:tags});
     ```
 
 ### Add tag
@@ -334,8 +334,8 @@ var txt = scene.make.rexTagText({
     ```
 - Set
     ```javascript
-    txt.setText('<style="name1">wor</style>ld');
-    // txt.text = '<style="name1">wor</style>ld';
+    txt.setText('<class="name1">wor</class>ld');
+    // txt.text = '<class="name1">wor</class>ld';
     ```
 
 ### Set style
@@ -386,9 +386,9 @@ txt.setFontStyle(style);
         ```
     - Set
         ```javascript
-        txt.setUnderline(color, thinkness, ofset);
+        txt.setUnderline(color, thickness, ofset);
         txt.setUnderlineColor(color);
-        txt.setUnderlineThinkness(thinkness);
+        txt.setUnderlineThinkness(thickness);
         txt.setUnderlineOffset(ofset);
         ```
 - Background
@@ -598,9 +598,9 @@ Define style inline text.
 - `<style='color:red'>Some text</style>`
 - `<style='size:30px'>Some text</style>`
 - `<style='y:-12;size:20px'>Some text</style>`
-- `<style='stroke:blue 1px'>Some text</style>` (color thinkness)
+- `<style='stroke:blue 1px'>Some text</style>` (color thickness)
 - `<style='shadow:blue 2px 2px 2px'>Some text</style>` (color offsetX offsetY blur)
-- `<style='underline:blue 3px -1px'>Some text</style>` (color thinkness offset)
+- `<style='underline:blue 3px -1px'>Some text</style>` (color thickness offset)
 
 Or mix them
 

@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.rextouchcursorplugin = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -23,6 +23,9 @@
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
     return Constructor;
   }
 
@@ -37,6 +40,9 @@
         writable: true,
         configurable: true
       }
+    });
+    Object.defineProperty(subClass, "prototype", {
+      writable: false
     });
     if (superClass) _setPrototypeOf(subClass, superClass);
   }
@@ -116,7 +122,7 @@
     return object;
   }
 
-  function _get(target, property, receiver) {
+  function _get() {
     if (typeof Reflect !== "undefined" && Reflect.get) {
       _get = Reflect.get;
     } else {
@@ -127,14 +133,14 @@
         var desc = Object.getOwnPropertyDescriptor(base, property);
 
         if (desc.get) {
-          return desc.get.call(receiver);
+          return desc.get.call(arguments.length < 3 ? target : receiver);
         }
 
         return desc.value;
       };
     }
 
-    return _get(target, property, receiver || target);
+    return _get.apply(this, arguments);
   }
 
   var Key = Phaser.Input.Keyboard.Key;
@@ -674,6 +680,19 @@
     }
   };
 
+  var ScreenXYToWorldXY = function ScreenXYToWorldXY(screenX, screenY, camera, out) {
+    if (out === undefined) {
+      out = {};
+    } else if (out === true) {
+      out = globalOut;
+    }
+
+    camera.getWorldPoint(screenX, screenY, out);
+    return out;
+  };
+
+  var globalOut = {};
+
   var GetValue = Phaser.Utils.Objects.GetValue;
   var CircleClass = Phaser.Geom.Circle;
   var CircleContains = Phaser.Geom.Circle.Contains;
@@ -794,7 +813,7 @@
         // if this camera is not main-camera
 
         if (camera !== this.mainCamera) {
-          camera.getWorldPoint(pointer.x, pointer.y, worldXY);
+          worldXY = ScreenXYToWorldXY(pointer.x, pointer.y, camera, worldXY);
         } else {
           worldXY.x = pointer.worldX;
           worldXY.y = pointer.worldY;
@@ -850,4 +869,4 @@
 
   return TouchCursorPlugin;
 
-})));
+}));

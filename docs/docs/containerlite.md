@@ -9,8 +9,12 @@ It is inspired from [Ziao/phaser3-interim-containers](https://github.com/Ziao/ph
 
 ## Live demos
 
-- [Tween child](https://codepen.io/rexrainbow/pen/KKpGzvx)
+
 - [Rotate, alpha](https://codepen.io/rexrainbow/pen/NBgpYd)
+- [Tween child](https://codepen.io/rexrainbow/pen/KKpGzvx)
+- [Create tween config](https://codepen.io/rexrainbow/pen/qBxdwxo)
+- [Timeline child](https://codepen.io/rexrainbow/pen/GRQJPLV)
+- [Mix timeline](https://codepen.io/rexrainbow/pen/VwQLNyG)
 
 ## Usage
 
@@ -71,7 +75,7 @@ It is inspired from [Ziao/phaser3-interim-containers](https://github.com/Ziao/ph
 - Add container object
     ```javascript    
     var container = new ContainerLite(scene, x, y);
-    sscene.add.existing(container);
+    scene.add.existing(container);
     ```
 
 ### Add container object
@@ -448,7 +452,7 @@ Reset local state of child according to current properties of children
 #### Tween local state
 
 ```javascript
-container.tweenChild({
+var tweenObj = container.tweenChild({
     targets: child,
     // x: '+=100',
     // y: '+=100',
@@ -465,6 +469,46 @@ Supported properties :
 - `angle`, `rotation`
 - `scaleX`, `scaleY`, `displayWidth`, `displayHeight`
 - `alpha`
+
+#### Create tween config
+
+```javascript
+var tweenConfig = container.createTweenChildConfig({
+     targets: child,
+    // x: '+=100',
+    // y: '+=100',
+    // repeat: -1,
+    // yoyo: true
+});
+scene.tweens.add(tweenConfig);
+```
+
+- Input of `targets` is/are game object(s), will be replaced by local state of game object(S)
+- Wrap `onUpdate` callback, to update properties of child according to local state.
+
+#### Timeline local state
+
+```javascript
+var timelineObj = container.timelineChild({
+    targets: child,    // Can assign child here
+    loop: -1,
+    duration: 100,
+    tweens: [
+        {
+            // targets: child,    // Or assign child here
+            angle: 10,
+            yoyo: true,
+        },
+        {
+            // targets: child,    // Or assign child here
+            angle: -10,
+            yoyo: true,
+        },
+    ]
+})
+```
+
+[Paramters of configuration](https://rexrainbow.github.io/phaser3-rex-notes/docs/site/tween-timeline/#create-timeline-included-tween-tasks) is the same as creating timeline.
 
 ### Depth
 

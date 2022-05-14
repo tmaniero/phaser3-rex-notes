@@ -2,22 +2,16 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.rextagtextplugin = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
   function _typeof(obj) {
     "@babel/helpers - typeof";
 
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      _typeof = function (obj) {
-        return typeof obj;
-      };
-    } else {
-      _typeof = function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+      return typeof obj;
+    } : function (obj) {
+      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    }, _typeof(obj);
   }
 
   function _classCallCheck(instance, Constructor) {
@@ -39,6 +33,9 @@
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
     return Constructor;
   }
 
@@ -53,6 +50,9 @@
         writable: true,
         configurable: true
       }
+    });
+    Object.defineProperty(subClass, "prototype", {
+      writable: false
     });
     if (superClass) _setPrototypeOf(subClass, superClass);
   }
@@ -132,7 +132,7 @@
     return object;
   }
 
-  function _get(target, property, receiver) {
+  function _get() {
     if (typeof Reflect !== "undefined" && Reflect.get) {
       _get = Reflect.get;
     } else {
@@ -143,14 +143,14 @@
         var desc = Object.getOwnPropertyDescriptor(base, property);
 
         if (desc.get) {
-          return desc.get.call(receiver);
+          return desc.get.call(arguments.length < 3 ? target : receiver);
         }
 
         return desc.value;
       };
     }
 
-    return _get(target, property, receiver || target);
+    return _get.apply(this, arguments);
   }
 
   function _toConsumableArray(arr) {
@@ -1581,7 +1581,8 @@
 
       if (pen.hasAreaMarker && pen.width > 0) {
         this.hitAreaManager.add(pen.prop.area, // key
-        offsetX, offsetY - this.startYOffset, // y
+        offsetX, // x
+        offsetY - this.startYOffset, // y
         pen.width, // width
         this.defaultStyle.lineHeight // height
         );
@@ -3772,10 +3773,10 @@
           }
 
           if (prop.hasOwnProperty('stroke')) {
-            var stroke = prop.stroke; // {color, thinkness}
+            var stroke = prop.stroke; // {color, thickness}
 
             result.stroke = stroke.hasOwnProperty('color') ? stroke.color : defaultStyle.stroke;
-            result.strokeThickness = stroke.hasOwnProperty('thinkness') ? stroke.thinkness : defaultStyle.strokeThickness;
+            result.strokeThickness = stroke.hasOwnProperty('thickness') ? stroke.thickness : defaultStyle.strokeThickness;
           } else {
             result.stroke = defaultStyle.stroke;
             result.strokeThickness = defaultStyle.strokeThickness;
@@ -3803,10 +3804,10 @@
         }
 
         if (prop.hasOwnProperty('u') || prop.hasOwnProperty('underline')) {
-          var u = prop.hasOwnProperty('u') ? prop.u : prop.underline; // {color, thinkness, offset}
+          var u = prop.hasOwnProperty('u') ? prop.u : prop.underline; // {color, thickness, offset}
 
           result.underlineColor = u.hasOwnProperty('color') ? u.color : defaultStyle.underlineColor;
-          result.underlineThickness = u.hasOwnProperty('thinkness') ? u.thinkness : defaultStyle.underlineThickness;
+          result.underlineThickness = u.hasOwnProperty('thickness') ? u.thickness : defaultStyle.underlineThickness;
           result.underlineOffset = u.hasOwnProperty('offset') ? u.offset : defaultStyle.underlineOffset;
         } else {
           result.underlineColor = defaultStyle.underlineColor;
@@ -3822,9 +3823,9 @@
         var strokeThinkness;
 
         if (prop.hasOwnProperty('stroke')) {
-          var stroke = prop.stroke; // {color, thinkness}           
+          var stroke = prop.stroke; // {color, thickness}           
 
-          strokeThinkness = stroke.hasOwnProperty('thinkness') ? stroke.thinkness : defaultStyle.strokeThickness;
+          strokeThinkness = stroke.hasOwnProperty('thickness') ? stroke.thickness : defaultStyle.strokeThickness;
         } else {
           strokeThinkness = defaultStyle.strokeThickness;
         }
@@ -3899,7 +3900,7 @@
           }
 
           if (len >= 2) {
-            v.thinkness = parseInt(stroke[1].replace('px', ''));
+            v.thickness = parseInt(stroke[1].replace('px', ''));
           }
 
           break;
@@ -3940,7 +3941,7 @@
           }
 
           if (len >= 2) {
-            v.thinkness = parseInt(u[1].replace('px', ''));
+            v.thickness = parseInt(u[1].replace('px', ''));
           }
 
           if (len >= 3) {
@@ -4121,8 +4122,12 @@
     return entry;
   };
 
-  var SetValue = function SetValue(target, keys, value) {
-    // no object
+  var SetValue = function SetValue(target, keys, value, delimiter) {
+    if (delimiter === undefined) {
+      delimiter = '.';
+    } // no object
+
+
     if (_typeof(target) !== 'object') {
       return;
     } // invalid key
@@ -4136,7 +4141,7 @@
       }
     } else {
       if (typeof keys === 'string') {
-        keys = keys.split('.');
+        keys = keys.split(delimiter);
       }
 
       var lastKey = keys.pop();
@@ -4178,4 +4183,4 @@
 
   return TagTextPlugin;
 
-})));
+}));

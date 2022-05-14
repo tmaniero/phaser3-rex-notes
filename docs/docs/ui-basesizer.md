@@ -599,6 +599,41 @@ var click = scene.rexUI.add.click(sizer, config);
 click.on('click', callback, scope);
 ```
 
+### Click outside
+
+- Add click-outside event
+    ```javascript
+    sizer.onClickOutside(callback, scope);
+    // sizer.onClickOutside(callback, scope, config);
+    ```
+    - `config` : See [ClickOutside](clickoutside.md#create-instance)
+    - `callback` :
+        ```javascript
+        function(clickOutside, gameObject, pointer) {
+
+        }
+        ```
+        - `clickOutside` : [ClickOutside](clickoutside.md) behavior.
+- Turn off click-outside event
+    ```javascript
+    sizer.offClickOutside(callback, scope);
+    ```
+- Enable click-outside event
+    ```javascript
+    sizer.enableClickOutside();
+    ```
+- Disable click-outside event
+    ```javascript
+    sizer.disableClickOutside();
+    ```
+
+Equal to 
+
+```javascript
+var clickOutside = scene.rexUI.add.clickOutside(sizer, config);
+clickOutside.on('clickoutside', callback, scope);
+```
+
 ### Set children interactive
 
 Applies [click](button.md), [tap](gesture-tap.md), [press](gesture-press.md), [swipe](gesture-swipe.md) behaviors on this sizer, to detect input events of children.
@@ -952,6 +987,27 @@ var isTouching = sizer.isInTouching();
     `container.add(sizer)`, or `layer.add(sizer)` won't add children of sizer.
 
 ### Events
+
+#### Dragging
+
+- Fire `'sizer.drag'` on top-most sizer when [dragging](ui-basesizer.md#drag-top-most-sizer)
+    ```javascript
+    topmostSizer.on('sizer.drag', function(pointer, dragX, dragY) {
+
+    })
+    ```
+- Fire `'sizer.dragstart'` on top-most sizer when [dragging](ui-basesizer.md#drag-top-most-sizer) start.
+    ```javascript
+    topmostSizer.on('sizer.dragstart', function(pointer, dragX, dragY) {
+
+    })
+    ```
+- Fire `'sizer.dragend'` on top-most sizer when [dragging](ui-basesizer.md#drag-top-most-sizer) dragend.
+    ```javascript
+    topmostSizer.on('sizer.dragend', function(pointer, dragX, dragY, dropped) {
+
+    })
+    ```
 
 #### Layout children
 

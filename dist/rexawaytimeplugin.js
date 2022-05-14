@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.rexawaytimeplugin = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -23,6 +23,9 @@
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
     return Constructor;
   }
 
@@ -37,6 +40,9 @@
         writable: true,
         configurable: true
       }
+    });
+    Object.defineProperty(subClass, "prototype", {
+      writable: false
     });
     if (superClass) _setPrototypeOf(subClass, superClass);
   }
@@ -116,7 +122,7 @@
     return object;
   }
 
-  function _get(target, property, receiver) {
+  function _get() {
     if (typeof Reflect !== "undefined" && Reflect.get) {
       _get = Reflect.get;
     } else {
@@ -127,14 +133,14 @@
         var desc = Object.getOwnPropertyDescriptor(base, property);
 
         if (desc.get) {
-          return desc.get.call(receiver);
+          return desc.get.call(arguments.length < 3 ? target : receiver);
         }
 
         return desc.value;
       };
     }
 
-    return _get(target, property, receiver || target);
+    return _get.apply(this, arguments);
   }
 
   var GetValue = Phaser.Utils.Objects.GetValue;
@@ -240,14 +246,15 @@
     _createClass(AwayTimePlugin, [{
       key: "start",
       value: function start() {
-        this._awayTime = this.add();
         var eventEmitter = this.game.events;
         eventEmitter.on('destroy', this.destroy, this);
       }
     }, {
       key: "destroy",
       value: function destroy() {
-        this._awayTime.destroy();
+        if (this._defaultAwayTimer) {
+          this._defaultAwayTimer.destroy();
+        }
 
         _get(_getPrototypeOf(AwayTimePlugin.prototype), "destroy", this).call(this);
       }
@@ -257,22 +264,29 @@
         return new AwayTime(config);
       }
     }, {
+      key: "defaultAwayTimer",
+      get: function get() {
+        if (!this._defaultAwayTimer) {
+          this._defaultAwayTimer = this.add();
+        }
+
+        return this._defaultAwayTimer;
+      }
+    }, {
       key: "awayTime",
       get: function get() {
-        return this._awayTime.awayTime;
+        return this.defaultAwayTimer.awayTime;
       }
     }, {
       key: "setKey",
       value: function setKey(key) {
-        this._awayTime.setKey(key);
-
+        this.defaultAwayTimer.setKey(key);
         return this;
       }
     }, {
       key: "setPeriod",
       value: function setPeriod(time) {
-        this._awayTime.setPeriod(time);
-
+        this.defaultAwayTimer.setPeriod(time);
         return this;
       }
     }]);
@@ -282,4 +296,4 @@
 
   return AwayTimePlugin;
 
-})));
+}));

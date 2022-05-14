@@ -110,6 +110,7 @@ nav:
         - Grid table: gridtable.md
     - Zone: zone.md
     - Layer: layer.md
+    - Live2d: live2d.md
     - Light:
         - Light: light.md
         - Point light: point-light.md
@@ -138,6 +139,7 @@ nav:
         - Ease-move: easemove.md
         - Ease-data: easedata.md
         - Path follower: pathfollower.md
+        - Polar-coordinate: polar-coordinate.md
         - Anchor: anchor.md
         - Interception: interception.md
         - Particles along bounds: particles-along-bounds.md
@@ -182,6 +184,7 @@ nav:
                 - Pinch: gesture-pinch.md
                 - Rotate: gesture-rotate.md
         - Button: button.md
+        - Click outside: clickoutside.md
         - Drag: drag.md
         - Slider: slider.md
         - Scroller: scroller.md
@@ -343,6 +346,7 @@ nav:
     - Clock: clock.md
     - Life time: lifetime.md
     - Away time: awaytime.md
+    - Real time timers: realtimetimers.md
 - UI:
     - Overview: ui-overview.md
     - Base sizer: ui-basesizer.md

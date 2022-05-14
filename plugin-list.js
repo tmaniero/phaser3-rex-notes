@@ -26,6 +26,7 @@ module.exports = {
     'transitionimageplugin': './plugins/transitionimage-plugin.js',
     'fullwindowrectangleplugin': './plugins/fullwindowrectangle-plugin.js',
     'coverplugin': './plugins/cover-plugin.js',
+    'live2dplugin': ['./plugins/live2d-plugin.js', true],
     // texture
     'canvasframemanagerplugin': './plugins/canvasframemanager-plugin.js',
     'charactercacheplugin': './plugins/charactercache-plugin.js',
@@ -50,6 +51,7 @@ module.exports = {
     'sliderplugin': './plugins/slider-plugin.js',
     'scrollerplugin': './plugins/scroller-plugin.js',
     'buttonplugin': './plugins/button-plugin.js',
+    'clickoutsideplugin': './plugins/clickoutside-plugin.js',
     'touchcursorplugin': './plugins/touchcursor-plugin.js',
     'virtualjoystickplugin': './plugins/virtualjoystick-plugin.js',
     'cursoratboundplugin': './plugins/cursoratbound-plugin.js',
@@ -75,6 +77,7 @@ module.exports = {
     'rotatetoplugin': './plugins/rotateto-plugin.js',
     'flashplugin': './plugins/flash-plugin.js',
     'tintrgbplugin': './plugins/tintrgb-plugin.js',
+    'polarcoordinateplugin': './plugins/polarcoordinate-plugin.js',
     'shakepositionplugin': './plugins/shakeposition-plugin.js',
     'interceptionplugin': './plugins/interception-plugin.js',
     'anchorplugin': './plugins/anchor-plugin.js',
@@ -128,6 +131,7 @@ module.exports = {
     'clockplugin': './plugins/clock-plugin.js',
     'lifetimeplugin': './plugins/lifetime-plugin.js',
     'awaytimeplugin': './plugins/awaytime-plugin.js',
+    'realtimetimersplugin': './plugins/realtimetimers-plugin.js',
 
     // data structure
     'csvtoarrayplugin': './plugins/csvtoarray-plugin.js',
@@ -194,7 +198,7 @@ module.exports = {
     'bejeweled': './templates/bejeweled/Bejeweled.js',
     'uiplugin': './templates/ui/ui-plugin.js',
     'dialogquest': './templates/dialog-quest/DialogQuest.js',
-    'spinnerplugin': './templates/spinner/spinner-plugin.js',    
+    'spinnerplugin': './templates/spinner/spinner-plugin.js',
 
     // Plain class
     // rex ui
@@ -212,7 +216,7 @@ module.exports = {
     'customshapes': './templates/ui/customshapes/CustomShapes.js',
     'customprogress': './templates/ui/customprogress/CustomProgress.js',
     'chart': './templates/ui/chart/Chart.js',
-    'dialog': './templates/ui/dialog/Dialog.js',   
+    'dialog': './templates/ui/dialog/Dialog.js',
     'fixwidthsizer': './templates/ui/fixwidthsizer/FixWidthSizer.js',
     'overlapsizer': './templates/ui/overlapsizer/OverlapSizer.js',
     'flip': './templates/ui/flip/Flip.js',
