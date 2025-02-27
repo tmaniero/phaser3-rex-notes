@@ -2,7 +2,7 @@ import { TITLE } from '../../const/GameObjects.js';
 import { UILayer } from '../../const/Layers.js';
 import GenerateDefaultCreateGameObjectCallback from './GenerateDefaultCreateGameObjectCallback.js';
 import SetText from './SetText.js';
-import PopUp from './Popup.js';
+import PopUp from './PopUp.js'
 import Shake from '../utils/Shake.js';
 
 const GetValue = Phaser.Utils.Objects.GetValue;

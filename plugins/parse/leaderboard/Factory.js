@@ -1,4 +1,4 @@
-import Leaderboard from './Leaderboard.js';
+import Leaderboard from './LeaderBoard.js';
 import ObjectFactory from '../ObjectFactory.js';
 import SetValue from '../../utils/object/SetValue.js';
 
