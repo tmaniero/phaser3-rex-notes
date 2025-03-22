@@ -61,6 +61,8 @@ var OpenListPanel = function () {
 
         bounds: this.listBounds,
 
+        manualOpen: true
+
         // Close condition        
     })
         .on('open', function () {
@@ -94,6 +96,8 @@ var OpenListPanel = function () {
     this.dropDownBehavior = dropDownBehavior;
 
     this.pin(listPanel);
+
+    dropDownBehavior.requestOpen();
 
     return this;
 }

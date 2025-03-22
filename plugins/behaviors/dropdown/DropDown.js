@@ -51,7 +51,9 @@ class DropDown extends OpenCloseTransition {
             this.once('open', this.touchOutsideClose, this);
         }
 
-        this.requestOpen();
+        if (config.manualOpen === undefined || !config.manualOpen) {
+            this.requestOpen();
+        }
     }
 
     shutdown(fromScene) {
